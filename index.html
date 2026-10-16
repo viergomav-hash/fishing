@@ -141,7 +141,7 @@ details .content{padding:12px 16px 16px}
   margin-right:4px;vertical-align:middle}
 .map-legend .line{display:inline-block;width:18px;height:4px;border-radius:2px;
   margin-right:4px;vertical-align:middle}
-.report-map{position:relative;height:260px;border-radius:10px;overflow:hidden;
+.report-map{position:relative;height:300px;border-radius:10px;overflow:hidden;
   margin:8px 0;border:1px solid var(--border);background:#0d1117}
 .report-map .leaflet-container{background:#0d1117}
 .report-map-controls{position:absolute;top:8px;right:8px;z-index:800;
@@ -975,8 +975,8 @@ function drawScoredShoreline(map, poly, segments) {
   const group = L.layerGroup();
   for (const seg of segments) {
     const c = shoreColor(seg.score);
-    const weight = seg.isBest ? 8 : 5;
-    const opacity = seg.isBest ? 1.0 : 0.75;
+    const weight = seg.isBest ? 6 : 3;
+    const opacity = seg.isBest ? 1.0 : 0.8;
     L.polyline(seg.coords, {
       color: c, weight, opacity,
       lineCap: "round", lineJoin: "round"
@@ -1624,7 +1624,7 @@ function sectorPoints(center, radiusM, dirStart, dirEnd, steps) {
 }
 function addWindOverlay(map, center, windDir, windSpeedMs, radiusM) {
   if (!map || windDir == null || isNaN(windDir)) return;
-  const r = radiusM || 350;
+  const r = radiusM || 150;
   const group = L.layerGroup().addTo(map);
   const leewardCenter = (windDir + 180) % 360;
   L.polygon(sectorPoints(center, r, leewardCenter - 60, leewardCenter + 60),
@@ -1652,12 +1652,12 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
   if (map._wbOutline) { map.removeLayer(map._wbOutline); map._wbOutline = null; }
   if (map._arrowGroup) { map.removeLayer(map._arrowGroup); map._arrowGroup = null; }
 
-  // Синій пунктирний контур водойми
+  // Тонкий пунктирний контур водойми
   map._wbOutline = L.polygon(waterBody.coords, {
-    color: "#58a6ff", weight: 1.5, opacity: 0.5, fill: false, dashArray: "2,4"
+    color: "#58a6ff", weight: 1, opacity: 0.4, fill: false, dashArray: "3,5"
   }).addTo(map);
 
-  // Кольорова лінія берега
+  // Тонка кольорова лінія берега
   if (segments && segments.length) {
     map._shoreGroup = drawScoredShoreline(map, waterBody.coords, segments);
   }
@@ -1670,31 +1670,31 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
     const targetPt = bestSeg.mid;
     const dist = Math.round(distanceM(userPt, targetPt));
 
-    // Жовта пунктирна стрілка
+    // Тонка жовта пунктирна стрілка
     L.polyline([userPt, targetPt], {
-      color: "#ffd700", weight: 3, opacity: 0.9, dashArray: "8,5"
+      color: "#ffd700", weight: 2, opacity: 0.9, dashArray: "6,4"
     }).addTo(arrowGroup);
 
-    // Підпис з відстанню на середині лінії
+    // Компактний підпис з відстанню
     const midPt = [(userPt[0] + targetPt[0]) / 2, (userPt[1] + targetPt[1]) / 2];
     L.marker(midPt, {
       icon: L.divIcon({
         className: "dist-label",
-        html: `<div style="background:rgba(13,17,23,.95);color:#ffd700;padding:5px 11px;border-radius:8px;font-size:14px;font-weight:700;white-space:nowrap;border:2px solid #ffd700;box-shadow:0 3px 8px rgba(0,0,0,.6);">🎯 ${dist} м</div>`,
+        html: `<div style="background:rgba(13,17,23,.95);color:#ffd700;padding:4px 9px;border-radius:6px;font-size:12px;font-weight:700;white-space:nowrap;border:1.5px solid #ffd700;box-shadow:0 2px 6px rgba(0,0,0,.5);">🎯 ${dist} м</div>`,
         iconSize: [0, 0]
       })
     }).addTo(arrowGroup);
 
-    // Кругла мітка топ-місця на березі
+    // Маленький круглий маркер топ-місця
     L.circleMarker(targetPt, {
-      radius: 9, fillColor: "#ffd700", color: "#ffffff",
-      weight: 3, fillOpacity: 1
+      radius: 6, fillColor: "#ffd700", color: "#ffffff",
+      weight: 2, fillOpacity: 1
     }).addTo(arrowGroup);
 
-    // Пульсуючий ореол навколо
+    // Тонкий ореол
     L.circleMarker(targetPt, {
-      radius: 16, fillColor: "#ffd700", color: "#ffd700",
-      weight: 1, fillOpacity: 0.2
+      radius: 11, fillColor: "#ffd700", color: "#ffd700",
+      weight: 1, fillOpacity: 0.15
     }).addTo(arrowGroup);
   }
   arrowGroup.addTo(map);
@@ -1763,28 +1763,44 @@ function renderReportMap(containerId, snap, waterBody, mode) {
     if (reportMap) { reportMap.remove(); reportMap = null; }
     const center = [state.lat, state.lon];
     const localMap = L.map(containerId, {
-      center, zoom: 14, zoomControl: false, dragging: true, touchZoom: true,
+      center, zoom: 16, zoomControl: false, dragging: true, touchZoom: true,
       scrollWheelZoom: false, doubleClickZoom: true, boxZoom: false,
       keyboard: false, tap: true, attributionControl: false
     });
     reportMap = localMap;
     ensureLabelsPane(localMap);
     applyTile(localMap, "satellite");
+
     if (waterBody && waterBody.coords) {
       const segments = computeShoreline(waterBody.coords, snap.windDirDeg, snap.windSpeedMs, mode);
       addWaterBodyLayer(localMap, waterBody, segments, mode);
+
+      // Динамічний зум залежно від площі водойми
+      const areaHa = polygonAreaM2(waterBody.coords) / 10000;
+      let maxZoom;
+      if (areaHa < 0.3)       maxZoom = 20;   // крихітний ставок
+      else if (areaHa < 1)    maxZoom = 19;   // малий
+      else if (areaHa < 5)    maxZoom = 18;   // середній
+      else if (areaHa < 30)   maxZoom = 17;   // великий
+      else if (areaHa < 200)  maxZoom = 16;   // озеро
+      else                    maxZoom = 15;   // водосховище
+
       try {
         const bounds = L.latLngBounds(waterBody.coords.map(c => [c[0], c[1]]));
-        // Додаємо точку користувача в межі, щоб стрілка була видима
         bounds.extend([state.lat, state.lon]);
-        if (bounds.isValid()) localMap.fitBounds(bounds, {padding: [30, 30], maxZoom: 16});
+        if (bounds.isValid()) {
+          localMap.fitBounds(bounds, {padding: [20, 20], maxZoom: maxZoom});
+        }
       } catch (e) {}
     } else {
-      addWindOverlay(localMap, center, snap.windDirDeg, snap.windSpeedMs, 350);
+      addWindOverlay(localMap, center, snap.windDirDeg, snap.windSpeedMs, 150);
+      localMap.setView(center, 17);
     }
+
     toggleDepthLayer(localMap, reportDepthEnabled);
     updateReportDepthButtonState();
     setTimeout(() => { if (localMap) localMap.invalidateSize(); }, 100);
+
     const btnLayer = document.getElementById("btnReportLayer");
     const btnDepth = document.getElementById("btnReportDepth");
     const btnFs = document.getElementById("btnReportFullscreen");
