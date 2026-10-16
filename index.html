@@ -150,6 +150,7 @@ details .content{padding:12px 16px 16px}
   background:rgba(22,27,34,.9);color:var(--text);font-size:16px;
   cursor:pointer;display:flex;align-items:center;justify-content:center}
 .report-map-btn.active{background:var(--accent);border-color:var(--accent)}
+.report-map-btn.danger{background:rgba(218,54,51,.9);border-color:#da3633;color:white}
 .wind-label div,
 .dist-label div{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -157,6 +158,24 @@ details .content{padding:12px 16px 16px}
 .dist-label div{
   pointer-events:none;
 }
+/* Drawing overlay */
+.draw-overlay{position:absolute;bottom:0;left:0;right:0;z-index:900;
+  background:linear-gradient(to top, rgba(13,17,23,.98) 70%, rgba(13,17,23,.85));
+  padding:12px 14px;border-top:2px solid #ff9800;
+  animation:slideUp .25s ease-out}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.draw-hint{font-size:13px;color:#e6edf3;margin-bottom:8px;text-align:center;line-height:1.35}
+.draw-hint strong{color:#ff9800;font-size:16px;font-weight:700}
+.draw-hint .sub{display:block;font-size:11.5px;color:#8b949e;margin-top:2px}
+.draw-btns{display:flex;gap:6px}
+.draw-btn{flex:1;padding:11px 6px;border:1px solid #30363d;border-radius:8px;
+  background:#21262d;color:#e6edf3;font-size:12px;cursor:pointer;font-weight:600;
+  font-family:inherit;transition:background .15s}
+.draw-btn:hover{background:#2d333b}
+.draw-btn.primary{background:#238636;border-color:#238636;color:white}
+.draw-btn.primary:hover{background:#2ea043}
+.draw-btn.danger{background:#da3633;border-color:#da3633;color:white}
+.draw-btn.danger:hover{background:#f85149}
 :fullscreen{background:#000}
 :-webkit-full-screen{background:#000}
 #screen-map:fullscreen,
@@ -340,8 +359,9 @@ const OVERPASS_MIRRORS = [
   "https://overpass.kumi.systems/api/interpreter",
   "https://overpass.private.coffee/api/interpreter"
 ];
-const WATER_CACHE_KEY = "carp_water_body_v1";
+const WATER_CACHE_KEY = "carp_water_body_v3";
 const WATER_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const CUSTOM_POLYGON_KEY = "carp_custom_polygons_v1";
 
 // ============================================================
 // УТИЛІТИ
@@ -836,7 +856,7 @@ function aromaAdvice(wTemp) {
 }
 
 // ============================================================
-// ВОДОЙМА
+// ВОДОЙМА (OSM)
 // ============================================================
 function _waterCacheGet(lat, lon) {
   try {
@@ -865,40 +885,164 @@ function _waterCacheSet(lat, lon, data) {
     localStorage.setItem(WATER_CACHE_KEY, JSON.stringify(all));
   } catch {}
 }
+
+// ============================================================
+// КАСТОМНИЙ ПОЛІГОН (намальований користувачем вручну)
+// ============================================================
+function _customPolygonGet(lat, lon) {
+  try {
+    const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
+    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    return all[key] || null;
+  } catch { return null; }
+}
+function _customPolygonSet(lat, lon, coords) {
+  try {
+    const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
+    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    all[key] = coords;
+    localStorage.setItem(CUSTOM_POLYGON_KEY, JSON.stringify(all));
+    return true;
+  } catch { return false; }
+}
+function _customPolygonDelete(lat, lon) {
+  try {
+    const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
+    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    delete all[key];
+    localStorage.setItem(CUSTOM_POLYGON_KEY, JSON.stringify(all));
+  } catch {}
+}
+
+function _bufferLine(coords, widthM) {
+  if (!coords || coords.length < 2) return [];
+  const halfW = widthM / 2;
+  const left = [];
+  const right = [];
+  for (let i = 0; i < coords.length; i++) {
+    const prev = coords[Math.max(0, i - 1)];
+    const next = coords[Math.min(coords.length - 1, i + 1)];
+    const bearing = bearingDeg(prev, next);
+    const leftPt = destination(coords[i], (bearing + 270) % 360, halfW);
+    const rightPt = destination(coords[i], (bearing + 90) % 360, halfW);
+    left.push(leftPt);
+    right.push(rightPt);
+  }
+  return left.concat(right.reverse());
+}
+
 function _extractPolygons(data) {
-  const out = [];
-  if (!data || !data.elements) return out;
+  if (!data || !data.elements) return [];
+
+  const ways = [];
   for (const el of data.elements) {
-    if (el.type === "way" && el.geometry && el.geometry.length >= 3) {
+    if (el.type === "way" && el.geometry && el.geometry.length >= 2) {
       const coords = el.geometry.map(g => [g.lat, g.lon]);
-      out.push({ coords, tags: el.tags || {}, id: `way/${el.id}` });
+      ways.push({ coords, tags: el.tags || {}, id: `way/${el.id}` });
     } else if (el.type === "relation" && el.members) {
       for (const m of el.members) {
-        if (m.type === "way" && m.role === "outer" && m.geometry && m.geometry.length >= 3) {
+        if (m.type === "way" && m.role === "outer" && m.geometry && m.geometry.length >= 2) {
           const coords = m.geometry.map(g => [g.lat, g.lon]);
-          out.push({ coords, tags: el.tags || {}, id: `relation/${el.id}` });
+          ways.push({ coords, tags: el.tags || {}, id: `relation/${el.id}` });
         }
       }
     }
   }
-  return out;
+
+  const processed = [];
+  for (const w of ways) {
+    const first = w.coords[0];
+    const last = w.coords[w.coords.length - 1];
+    const isClosed = distanceM(first, last) < 30;
+
+    if (isClosed) {
+      processed.push(w);
+    } else {
+      const buffered = _bufferLine(w.coords, 25);
+      if (buffered.length >= 4) {
+        processed.push({ coords: buffered, tags: w.tags, id: w.id + "/buffered", buffered: true });
+      }
+    }
+  }
+
+  const MERGE_THRESHOLD_M = 25;
+  const used = new Array(processed.length).fill(false);
+  const result = [];
+
+  for (let i = 0; i < processed.length; i++) {
+    if (used[i]) continue;
+    used[i] = true;
+    const chain = processed[i].coords.slice();
+    const tags = processed[i].tags;
+    const id = processed[i].id;
+
+    let extended = true;
+    while (extended) {
+      extended = false;
+      for (let j = 0; j < processed.length; j++) {
+        if (used[j]) continue;
+        const w = processed[j].coords;
+        const head = chain[0];
+        const tail = chain[chain.length - 1];
+        const wStart = w[0];
+        const wEnd = w[w.length - 1];
+
+        if (distanceM(tail, wStart) < MERGE_THRESHOLD_M) {
+          chain.push(...w.slice(1));
+          used[j] = true; extended = true;
+        } else if (distanceM(tail, wEnd) < MERGE_THRESHOLD_M) {
+          chain.push(...w.slice(0, -1).reverse());
+          used[j] = true; extended = true;
+        } else if (distanceM(head, wEnd) < MERGE_THRESHOLD_M) {
+          chain.unshift(...w.slice(0, -1));
+          used[j] = true; extended = true;
+        } else if (distanceM(head, wStart) < MERGE_THRESHOLD_M) {
+          chain.unshift(...w.slice(1).reverse());
+          used[j] = true; extended = true;
+        }
+      }
+    }
+
+    if (chain.length >= 4) {
+      result.push({ coords: chain, tags, id, merged: true });
+    }
+  }
+
+  if (result.length === 0) {
+    for (const w of processed) {
+      if (w.coords.length >= 3) {
+        result.push({ coords: w.coords, tags: w.tags, id: w.id });
+      }
+    }
+  }
+
+  return result;
 }
+
 async function fetchWaterBody(lat, lon) {
   const cached = _waterCacheGet(lat, lon);
   if (cached !== undefined) return cached;
-  const query = `[out:json][timeout:15];
+
+  const query = `[out:json][timeout:20];
 (
-  way(around:1500,${lat},${lon})["natural"="water"];
-  way(around:1500,${lat},${lon})["waterway"="riverbank"];
-  way(around:1500,${lat},${lon})["landuse"="reservoir"];
-  way(around:1500,${lat},${lon})["landuse"="basin"];
-  relation(around:1500,${lat},${lon})["natural"="water"];
+  way(around:3000,${lat},${lon})["natural"="water"];
+  way(around:3000,${lat},${lon})["waterway"="riverbank"];
+  way(around:3000,${lat},${lon})["landuse"="reservoir"];
+  way(around:3000,${lat},${lon})["landuse"="basin"];
+  way(around:3000,${lat},${lon})["water"="lake"];
+  way(around:3000,${lat},${lon})["water"="pond"];
+  way(around:3000,${lat},${lon})["water"="reservoir"];
+  way(around:3000,${lat},${lon})["water"="river"];
+  relation(around:3000,${lat},${lon})["natural"="water"];
+  relation(around:3000,${lat},${lon})["waterway"="riverbank"];
+  relation(around:3000,${lat},${lon})["water"="lake"];
 );
 out geom;`;
+
   for (const mirror of OVERPASS_MIRRORS) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 12000);
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const resp = await fetch(mirror, {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -910,14 +1054,18 @@ out geom;`;
       const data = await resp.json();
       const polys = _extractPolygons(data);
       if (!polys.length) { _waterCacheSet(lat, lon, null); return null; }
+
       const containing = polys.find(p => pointInPolygon(lat, lon, p.coords));
       let best;
       if (containing) {
         best = containing;
       } else {
-        best = polys.slice().sort((a,b) => {
+        best = polys.slice().sort((a, b) => {
           const da = distanceM([lat,lon], polygonCentroid(a.coords));
           const db = distanceM([lat,lon], polygonCentroid(b.coords));
+          const areaA = polygonAreaM2(a.coords);
+          const areaB = polygonAreaM2(b.coords);
+          if (Math.abs(da - db) < 300) return areaB - areaA;
           return da - db;
         })[0];
       }
@@ -927,6 +1075,7 @@ out geom;`;
   }
   return null;
 }
+
 function computeShoreline(poly, windDir, windSpeed, mode) {
   const n = poly.length;
   if (n < 3) return [];
@@ -1177,10 +1326,15 @@ function renderReportMapBlock(windFrom, windSpeedMs, isPredator, wbMod) {
     ? `<span><span class="line" style="background:#f85149"></span>Навітряний — «ряб», маскує</span>`
     : `<span><span class="line" style="background:#f85149"></span>Навітряний — вас видно</span>`;
   const legendYellow = `<span><span class="line" style="background:#d29922"></span>Нейтрально</span>`;
+  const legendBlue = `<span><span class="dot" style="background:#58a6ff"></span>Ви тут</span>`;
   const hasWb = wbMod && wbMod.areaHa != null;
+  const custom = _customPolygonGet(state.lat, state.lon);
   const hint = isPredator
     ? `💨 Хижаки: помірний «ряб» на навітряному березі. Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`
     : `💨 Мирна риба: підвітряний берег (зелений). Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`;
+  const customHint = custom
+    ? `<div class="hint" style="color:#ff9800">✏️ Використовується ваш намальований контур</div>`
+    : `<div class="hint">💡 Якщо контур невірний — натисніть ✏️ щоб обвести вручну</div>`;
   return `
     <div class="card">
       <h2>🗺 Рекомендований берег</h2>
@@ -1189,11 +1343,25 @@ function renderReportMapBlock(windFrom, windSpeedMs, isPredator, wbMod) {
           <button class="report-map-btn" id="btnReportFullscreen" title="На весь екран" aria-label="На весь екран">⛶</button>
           <button class="report-map-btn" id="btnReportDepth" title="Глибини" aria-label="Глибини">🌊</button>
           <button class="report-map-btn" id="btnReportLayer" title="Шар" aria-label="Шар карти">🛰</button>
+          <button class="report-map-btn" id="btnReportDraw" title="Обвести контур вручну" aria-label="Обвести контур">✏️</button>
+          <button class="report-map-btn danger" id="btnReportDeleteCustom" title="Видалити власний контур" aria-label="Видалити контур" style="display:none">🗑️</button>
+        </div>
+        <div id="drawOverlay" class="draw-overlay hidden">
+          <div class="draw-hint">
+            ✏️ Тапайте по берегу, щоб обвести контур. Точок: <strong id="drawCount">0</strong>
+            <span class="sub">Потрібно мінімум 3 точки. Потім «Завершити».</span>
+          </div>
+          <div class="draw-btns">
+            <button id="drawUndo" class="draw-btn">↩️ Точку</button>
+            <button id="drawFinish" class="draw-btn primary">✅ Завершити</button>
+            <button id="drawCancel" class="draw-btn danger">❌ Скасувати</button>
+          </div>
         </div>
       </div>
-      <div class="map-legend">${legendLeeward}${legendYellow}${legendWindward}</div>
-      <div class="hint">${hasWb ? "🎯 жовта мітка + стрілка — рекомендоване місце. 🟢 топ-3 — товстіша лінія" : "Контур водойми не знайдено в OSM"}</div>
+      <div class="map-legend">${legendBlue}${legendLeeward}${legendYellow}${legendWindward}</div>
+      <div class="hint">${hasWb ? "🎯 жовта мітка + стрілка — рекомендоване місце" : "Контур водойми не знайдено в OSM"}</div>
       <div class="hint">${hint}</div>
+      ${customHint}
     </div>`;
 }
 function renderPeacefulReport(report) {
@@ -1562,6 +1730,122 @@ const ESRI_PLACES_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/Re
 const ESRI_ROADS_URL  = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}";
 const ESRI_REF_ATTR   = '© Esri Reference';
 
+// ============================================================
+// РЕЖИМ МАЛЮВАННЯ КОНТУРУ
+// ============================================================
+const _drawState = {
+  active: false,
+  points: [],
+  markers: [],
+  line: null,
+  map: null,
+  pendingLayer: null
+};
+
+function _resetDrawingState() {
+  if (_drawState.map) {
+    try { _drawState.map.off("click", _onDrawClick); } catch (e) {}
+  }
+  _drawState.active = false;
+  _drawState.points = [];
+  _drawState.markers = [];
+  _drawState.line = null;
+  _drawState.map = null;
+  _drawState.pendingLayer = null;
+  const overlay = document.getElementById("drawOverlay");
+  if (overlay) overlay.classList.add("hidden");
+  const btn = document.getElementById("btnReportDraw");
+  if (btn) {
+    btn.textContent = "✏️";
+    btn.classList.remove("active");
+  }
+}
+
+function _onDrawClick(e) {
+  if (!_drawState.active) return;
+  const pt = [e.latlng.lat, e.latlng.lng];
+  _drawState.points.push(pt);
+
+  const m = L.circleMarker(pt, {
+    radius: 6,
+    fillColor: "#ff9800",
+    color: "#ffffff",
+    weight: 2,
+    fillOpacity: 1
+  }).addTo(_drawState.pendingLayer);
+  _drawState.markers.push(m);
+
+  if (_drawState.line) _drawState.map.removeLayer(_drawState.line);
+  if (_drawState.points.length >= 2) {
+    _drawState.line = L.polyline(_drawState.points, {
+      color: "#ff9800",
+      weight: 3,
+      opacity: 0.95
+    }).addTo(_drawState.pendingLayer);
+  }
+
+  const cnt = document.getElementById("drawCount");
+  if (cnt) cnt.textContent = _drawState.points.length;
+}
+
+function _undoDrawPoint() {
+  if (!_drawState.active || _drawState.points.length === 0) return;
+  _drawState.points.pop();
+  const m = _drawState.markers.pop();
+  if (m) _drawState.map.removeLayer(m);
+  if (_drawState.line) _drawState.map.removeLayer(_drawState.line);
+  if (_drawState.points.length >= 2) {
+    _drawState.line = L.polyline(_drawState.points, {
+      color: "#ff9800", weight: 3, opacity: 0.95
+    }).addTo(_drawState.pendingLayer);
+  } else {
+    _drawState.line = null;
+  }
+  const cnt = document.getElementById("drawCount");
+  if (cnt) cnt.textContent = _drawState.points.length;
+}
+
+function startDrawingMode(map) {
+  if (!map) return;
+  _drawState.active = true;
+  _drawState.points = [];
+  _drawState.markers = [];
+  _drawState.line = null;
+  _drawState.map = map;
+  _drawState.pendingLayer = L.layerGroup().addTo(map);
+
+  const overlay = document.getElementById("drawOverlay");
+  if (overlay) overlay.classList.remove("hidden");
+  const cnt = document.getElementById("drawCount");
+  if (cnt) cnt.textContent = "0";
+
+  const btn = document.getElementById("btnReportDraw");
+  if (btn) {
+    btn.textContent = "✏️";
+    btn.classList.add("active");
+  }
+
+  map.on("click", _onDrawClick);
+  map.getContainer().style.cursor = "crosshair";
+}
+
+function finishDrawingMode() {
+  if (!_drawState.active) return;
+  const pts = _drawState.points.slice();
+  if (pts.length < 3) {
+    alert("Потрібно мінімум 3 точки. Тапніть ще " + (3 - pts.length) + ".");
+    return;
+  }
+  _customPolygonSet(state.lat, state.lon, pts);
+  _resetDrawingState();
+  // Перемалювати звіт з новим контуром
+  runForecast(state.mode);
+}
+
+function cancelDrawingMode() {
+  _resetDrawingState();
+}
+
 function ensureLabelsPane(map) {
   if (!map.getPane("labelsPane")) map.createPane("labelsPane");
   const pane = map.getPane("labelsPane");
@@ -1652,17 +1936,19 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
   if (map._wbOutline) { map.removeLayer(map._wbOutline); map._wbOutline = null; }
   if (map._arrowGroup) { map.removeLayer(map._arrowGroup); map._arrowGroup = null; }
 
-  // Тонкий пунктирний контур водойми
   map._wbOutline = L.polygon(waterBody.coords, {
-    color: "#58a6ff", weight: 1, opacity: 0.4, fill: false, dashArray: "3,5"
+    color: "#7ec8ff",
+    weight: 1.5,
+    opacity: 0.9,
+    fillColor: "#58a6ff",
+    fillOpacity: 0.12,
+    dashArray: null
   }).addTo(map);
 
-  // Тонка кольорова лінія берега
   if (segments && segments.length) {
     map._shoreGroup = drawScoredShoreline(map, waterBody.coords, segments);
   }
 
-  // 🎯 Топ-місце: маркер + стрілка від користувача
   const arrowGroup = L.layerGroup();
   if (segments && segments.length && state.lat != null && state.lon != null) {
     const bestSeg = segments.reduce((a, b) => (a.score > b.score ? a : b));
@@ -1670,12 +1956,10 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
     const targetPt = bestSeg.mid;
     const dist = Math.round(distanceM(userPt, targetPt));
 
-    // Тонка жовта пунктирна стрілка
     L.polyline([userPt, targetPt], {
       color: "#ffd700", weight: 2, opacity: 0.9, dashArray: "6,4"
     }).addTo(arrowGroup);
 
-    // Компактний підпис з відстанню
     const midPt = [(userPt[0] + targetPt[0]) / 2, (userPt[1] + targetPt[1]) / 2];
     L.marker(midPt, {
       icon: L.divIcon({
@@ -1685,13 +1969,11 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
       })
     }).addTo(arrowGroup);
 
-    // Маленький круглий маркер топ-місця
     L.circleMarker(targetPt, {
       radius: 6, fillColor: "#ffd700", color: "#ffffff",
       weight: 2, fillOpacity: 1
     }).addTo(arrowGroup);
 
-    // Тонкий ореол
     L.circleMarker(targetPt, {
       radius: 11, fillColor: "#ffd700", color: "#ffd700",
       weight: 1, fillOpacity: 0.15
@@ -1761,6 +2043,9 @@ function renderReportMap(containerId, snap, waterBody, mode) {
     const el = document.getElementById(containerId);
     if (!el) return;
     if (reportMap) { reportMap.remove(); reportMap = null; }
+    // Скидаємо стан малювання
+    _resetDrawingState();
+
     const center = [state.lat, state.lon];
     const localMap = L.map(containerId, {
       center, zoom: 16, zoomControl: false, dragging: true, touchZoom: true,
@@ -1775,15 +2060,14 @@ function renderReportMap(containerId, snap, waterBody, mode) {
       const segments = computeShoreline(waterBody.coords, snap.windDirDeg, snap.windSpeedMs, mode);
       addWaterBodyLayer(localMap, waterBody, segments, mode);
 
-      // Динамічний зум залежно від площі водойми
       const areaHa = polygonAreaM2(waterBody.coords) / 10000;
       let maxZoom;
-      if (areaHa < 0.3)       maxZoom = 20;   // крихітний ставок
-      else if (areaHa < 1)    maxZoom = 19;   // малий
-      else if (areaHa < 5)    maxZoom = 18;   // середній
-      else if (areaHa < 30)   maxZoom = 17;   // великий
-      else if (areaHa < 200)  maxZoom = 16;   // озеро
-      else                    maxZoom = 15;   // водосховище
+      if (areaHa < 0.3)       maxZoom = 20;
+      else if (areaHa < 1)    maxZoom = 19;
+      else if (areaHa < 5)    maxZoom = 18;
+      else if (areaHa < 30)   maxZoom = 17;
+      else if (areaHa < 200)  maxZoom = 16;
+      else                    maxZoom = 15;
 
       try {
         const bounds = L.latLngBounds(waterBody.coords.map(c => [c[0], c[1]]));
@@ -1797,13 +2081,41 @@ function renderReportMap(containerId, snap, waterBody, mode) {
       localMap.setView(center, 17);
     }
 
+    // Синій кружок позиції
+    L.circleMarker(center, {
+      radius: 9, fillColor: "#58a6ff", color: "#ffffff", weight: 4, fillOpacity: 1
+    }).addTo(localMap);
+    L.circleMarker(center, {
+      radius: 16, fillColor: "#58a6ff", color: "#58a6ff", weight: 1, fillOpacity: 0.2
+    }).addTo(localMap);
+
     toggleDepthLayer(localMap, reportDepthEnabled);
     updateReportDepthButtonState();
     setTimeout(() => { if (localMap) localMap.invalidateSize(); }, 100);
 
+    // Кнопки управління
     const btnLayer = document.getElementById("btnReportLayer");
     const btnDepth = document.getElementById("btnReportDepth");
     const btnFs = document.getElementById("btnReportFullscreen");
+    const btnDraw = document.getElementById("btnReportDraw");
+    const btnDeleteCustom = document.getElementById("btnReportDeleteCustom");
+    const drawOverlay = document.getElementById("drawOverlay");
+    const drawUndo = document.getElementById("drawUndo");
+    const drawFinish = document.getElementById("drawFinish");
+    const drawCancel = document.getElementById("drawCancel");
+
+    // Чи є кастомний полігон для цієї точки?
+    const hasCustom = !!_customPolygonGet(state.lat, state.lon);
+    if (btnDeleteCustom) {
+      btnDeleteCustom.style.display = hasCustom ? "flex" : "none";
+      btnDeleteCustom.onclick = () => {
+        if (confirm("Видалити ваш намальований контур?\n\nБуде використано дані OpenStreetMap (якщо є).")) {
+          _customPolygonDelete(state.lat, state.lon);
+          runForecast(state.mode);
+        }
+      };
+    }
+
     if (btnLayer) btnLayer.onclick = () => {
       currentLayerType = currentLayerType === "satellite" ? "osm" : "satellite";
       applyTile(localMap, currentLayerType);
@@ -1816,6 +2128,17 @@ function renderReportMap(containerId, snap, waterBody, mode) {
       updateReportDepthButtonState();
     };
     if (btnFs) btnFs.onclick = () => toggleFullscreen(el);
+
+    if (btnDraw) {
+      btnDraw.onclick = () => {
+        if (_drawState.active) return;
+        startDrawingMode(localMap);
+      };
+    }
+
+    if (drawUndo) drawUndo.onclick = _undoDrawPoint;
+    if (drawFinish) drawFinish.onclick = finishDrawingMode;
+    if (drawCancel) drawCancel.onclick = cancelDrawingMode;
   });
 }
 function updateReportDepthButtonState() {
@@ -1859,7 +2182,7 @@ function showScreen(name) {
   }
 }
 topbarBack.addEventListener("click", () => {
-  if (state.screen === "report") showScreen("select");
+  if (state.screen === "report") { _resetDrawingState(); showScreen("select"); }
   else if (state.screen === "select") showScreen("input");
   else if (state.screen === "map") showScreen("input");
 });
@@ -1917,12 +2240,19 @@ async function runForecast(mode) {
     state.targetDate.setHours(6, 0, 0, 0);
   }
   destroyAllCharts();
+  _resetDrawingState();
   screenReport.innerHTML = `<div class="loading"><div class="spinner"></div><div>Отримую метеодані та контур водойми...</div></div>`;
   showScreen("report");
   try {
+    // Пріоритет: спочатку кастомний полігон (намальований вручну), потім OSM
+    const custom = _customPolygonGet(state.lat, state.lon);
+    const waterBodyPromise = (custom && custom.length >= 3)
+      ? Promise.resolve({ coords: custom, tags: {name: "Намальований вручну"}, id: "custom" })
+      : fetchWaterBody(state.lat, state.lon).catch(() => null);
+
     const [weatherData, waterBody] = await Promise.all([
       fetchWeather(state.lat, state.lon),
-      fetchWaterBody(state.lat, state.lon).catch(() => null)
+      waterBodyPromise
     ]);
     if (token !== _forecastToken) return;
     state.weatherData = weatherData;
