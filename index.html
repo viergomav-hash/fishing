@@ -36,6 +36,10 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 #topbarBack{background:none;border:none;color:var(--text);font-size:22px;
   padding:4px 8px;cursor:pointer;border-radius:8px}
 #topbarBack:hover{background:var(--bg3)}
+#topbarMode{background:none;border:none;color:var(--text);font-size:20px;
+  padding:4px 8px;cursor:pointer;border-radius:8px;line-height:1;
+  display:flex;align-items:center;justify-content:center;min-width:36px;height:36px}
+#topbarMode:hover{background:var(--bg3)}
 .hidden{display:none!important}
 main{padding:var(--pad);max-width:640px;margin:0 auto}
 .screen{display:none}
@@ -54,6 +58,8 @@ main{padding:var(--pad);max-width:640px;margin:0 auto}
 .btn:hover,.btn:active{background:var(--accent2)}
 .btn.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
 .btn.secondary:hover{background:#2d333b}
+.btn.danger{background:rgba(248,81,73,.1);color:var(--red);border:1px solid var(--red)}
+.btn.danger:hover{background:rgba(248,81,73,.2)}
 .btn-icon{font-size:20px;margin-right:8px;vertical-align:middle}
 .field{display:block;margin-bottom:10px}
 .field label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px}
@@ -108,21 +114,29 @@ details .content{padding:12px 16px 16px}
 .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--bg3);
   border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.history-item{display:block;width:100%;text-align:left;padding:12px 14px;
-  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
-  color:var(--text);font-size:14px;margin-bottom:6px;cursor:pointer}
-.history-item:hover{border-color:var(--accent)}
+.history-item{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;margin-bottom:8px;gap:8px}
+.history-main{flex:1;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-main:hover .h-name{color:var(--blue)}
+.history-main .h-name{font-weight:600;font-size:14px;color:var(--text);margin-bottom:2px}
+.history-main .h-coords{font-size:12px;color:var(--text2);font-family:ui-monospace,Menlo,monospace}
+.history-actions{display:flex;gap:4px;flex-shrink:0}
+.history-btn{background:none;border:1px solid var(--border);border-radius:6px;
+  color:var(--text);width:32px;height:32px;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .15s}
+.history-btn:hover{background:var(--bg2)}
 @media(max-width:400px){
   .score-row .label{flex-basis:95px;font-size:13px}
   .weather-grid{font-size:13px}
 }
 #screen-map{position:relative;height:calc(100vh - 52px - env(safe-area-inset-top));
   overflow:hidden;padding:0}
-#pickerMap{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+#pickerMap{position:absolute;inset:0;width:100%;height:100%;z-index:1;background:#1a1f26}
 .map-crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   pointer-events:none;z-index:500;filter:drop-shadow(0 0 4px rgba(0,0,0,.9))}
 .map-controls-top{position:absolute;top:12px;right:12px;z-index:1000;
-  display:flex;flex-direction:column;gap:8px}
+  display:flex;flex-direction:column;gap:8px; pointer-events: auto;}
 .map-btn{width:44px;height:44px;border-radius:10px;border:1px solid var(--border);
   background:rgba(22,27,34,.92);color:var(--text);font-size:20px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
@@ -131,7 +145,7 @@ details .content{padding:12px 16px 16px}
 .map-btn.active{background:var(--accent);border-color:var(--accent)}
 .map-controls-bottom{position:absolute;bottom:0;left:0;right:0;z-index:1000;
   background:linear-gradient(to top, rgba(13,17,23,.98) 60%, rgba(13,17,23,0));
-  padding:20px var(--pad) calc(16px + env(safe-area-inset-bottom))}
+  padding:20px var(--pad) calc(16px + env(safe-area-inset-bottom)); pointer-events: auto;}
 .map-coord-display{text-align:center;color:var(--text);
   font-family:ui-monospace,Menlo,monospace;font-size:13px;margin-bottom:10px;
   text-shadow:0 0 6px rgba(0,0,0,.9)}
@@ -141,28 +155,66 @@ details .content{padding:12px 16px 16px}
   margin-right:4px;vertical-align:middle}
 .map-legend .line{display:inline-block;width:18px;height:4px;border-radius:2px;
   margin-right:4px;vertical-align:middle}
-.report-map{position:relative;height:300px;border-radius:10px;overflow:hidden;
-  margin:8px 0;border:1px solid var(--border);background:#0d1117}
-.report-map .leaflet-container{background:#0d1117}
-.report-map-controls{position:absolute;top:8px;right:8px;z-index:800;
-  display:flex;flex-direction:column;gap:6px}
-.report-map-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);
-  background:rgba(22,27,34,.9);color:var(--text);font-size:16px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center}
-.report-map-btn.active{background:var(--accent);border-color:var(--accent)}
-.report-map-btn.danger{background:rgba(218,54,51,.9);border-color:#da3633;color:white}
-.wind-label div,
-.dist-label div{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+
+/* ===== КАРТА У ЗВІТІ ===== */
+.report-map-wrap { 
+  position: relative; 
+  height: 300px; 
+  border-radius: 10px;
+  overflow: hidden; 
+  margin: 8px 0; 
+  border: 1px solid var(--border); 
+  background: #1a1f26;
+  isolation: isolate; 
 }
-.dist-label div{
-  pointer-events:none;
+.report-map { 
+  position: absolute; 
+  inset: 0; 
+  width: 100%; 
+  height: 100%; 
+  z-index: 1; 
+  background: #1a1f26;
 }
-/* Drawing overlay */
-.draw-overlay{position:absolute;bottom:0;left:0;right:0;z-index:900;
-  background:linear-gradient(to top, rgba(13,17,23,.98) 70%, rgba(13,17,23,.85));
-  padding:12px 14px;border-top:2px solid #ff9800;
-  animation:slideUp .25s ease-out}
+.report-map-controls { 
+  position: absolute; 
+  top: 8px; 
+  right: 8px; 
+  z-index: 1000; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  pointer-events: auto; 
+}
+.report-map-btn { 
+  width: 36px; 
+  height: 36px; 
+  border-radius: 8px; 
+  border: 1px solid var(--border);
+  background: rgba(22,27,34,.9); 
+  color: var(--text); 
+  font-size: 16px;
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  touch-action: manipulation; 
+}
+.report-map-btn.active { background: var(--accent); border-color: var(--accent); }
+
+.wind-label div, .dist-label div { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+.dist-label div{ pointer-events:none; }
+
+/* Оновлений блок малювання - тепер він всередині нижньої панелі */
+.draw-overlay { 
+  position: relative;
+  background: rgba(13,17,23,.85);
+  border: 1px solid #ff9800;
+  border-radius: 10px;
+  padding: 12px 14px; 
+  margin-bottom: 12px;
+  pointer-events: auto;
+  animation: slideUp .25s ease-out; 
+}
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 .draw-hint{font-size:13px;color:#e6edf3;margin-bottom:8px;text-align:center;line-height:1.35}
 .draw-hint strong{color:#ff9800;font-size:16px;font-weight:700}
@@ -170,20 +222,23 @@ details .content{padding:12px 16px 16px}
 .draw-btns{display:flex;gap:6px}
 .draw-btn{flex:1;padding:11px 6px;border:1px solid #30363d;border-radius:8px;
   background:#21262d;color:#e6edf3;font-size:12px;cursor:pointer;font-weight:600;
-  font-family:inherit;transition:background .15s}
+  font-family:inherit;transition:background .15s; touch-action: manipulation;}
 .draw-btn:hover{background:#2d333b}
 .draw-btn.primary{background:#238636;border-color:#238636;color:white}
 .draw-btn.primary:hover{background:#2ea043}
 .draw-btn.danger{background:#da3633;border-color:#da3633;color:white}
 .draw-btn.danger:hover{background:#f85149}
+
+/* Fullscreen */
 :fullscreen{background:#000}
 :-webkit-full-screen{background:#000}
 #screen-map:fullscreen,
 #screen-map:-webkit-full-screen{height:100vh!important;width:100vw!important;background:#000}
-.report-map:fullscreen,
-.report-map:-webkit-full-screen{
+.report-map-wrap:fullscreen,
+.report-map-wrap:-webkit-full-screen{
   height:100vh!important;width:100vw!important;
   border-radius:0!important;border:none!important;margin:0!important;background:#000}
+
 .leaflet-bar a,
 .leaflet-touch .leaflet-bar a{
   background:rgba(22,27,34,.92)!important;color:var(--text)!important;
@@ -193,13 +248,38 @@ details .content{padding:12px 16px 16px}
 .leaflet-control-attribution{
   background:rgba(13,17,23,.7)!important;color:var(--text2)!important;font-size:10px!important}
 .leaflet-control-attribution a{color:var(--blue)!important}
+
+/* ===== ПК-режим ===== */
+@media (min-width: 768px) {
+  body.mode-pc main { max-width: 1200px; }
+  body.mode-pc #screen-input { max-width: 640px; margin: 0 auto; }
+  body.mode-pc #screen-select { max-width: 760px; margin: 0 auto; }
+  body.mode-pc.screen-map-active main { max-width: none; padding: 0; }
+  body.mode-pc #reportContent {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  body.mode-pc #reportContent > .card { margin-bottom: 0; }
+  body.mode-pc #reportContent > .card.wide { grid-column: 1 / -1; }
+  body.mode-pc #reportContent > .info-box,
+  body.mode-pc #reportContent > .loading { grid-column: 1 / -1; }
+  body.mode-pc .report-map-wrap { height: 440px; }
+  body.mode-pc .chart-wrap.tall { height: 340px; }
+  body.mode-pc .chart-wrap.pressure { height: 240px; }
+}
+@media (max-width: 767px) {
+  #topbarMode { display: none; }
+}
 </style>
 </head>
 <body>
 
 <header id="topbar">
-  <button id="topbarBack" class="hidden" aria-label="Назад">←</button>
   <div id="topbarTitle">🎣 Кльов — прогноз</div>
+  <button id="topbarMode" aria-label="Змінити режим" title="Режим ПК / телефон">📱</button>
+  <button id="topbarBack" class="hidden" aria-label="Назад">←</button>
 </header>
 
 <main id="app">
@@ -229,6 +309,14 @@ details .content{padding:12px 16px 16px}
     <div class="card" id="historyCard" style="display:none">
       <h2>📚 Нещодавні місця</h2>
       <div id="historyList"></div>
+    </div>
+
+    <button class="btn danger" id="btnClearAllData">
+      <span class="btn-icon">🧹</span>Очистити всі збережені дані
+    </button>
+    
+    <div style="text-align:center; color:var(--text2); font-size:12px; margin-top:24px; margin-bottom:10px;">
+      Кльов v2.8 (Зручний інтерфейс)
     </div>
   </section>
 
@@ -276,13 +364,30 @@ details .content{padding:12px 16px 16px}
         <line x1="31" y1="22" x2="44" y2="22" stroke="#238636" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
     </div>
-    <div class="map-controls-top">
+    <div class="map-controls-top" id="pickerControlsTop">
       <button class="map-btn" id="btnMapFullscreen" title="На весь екран" aria-label="На весь екран">⛶</button>
       <button class="map-btn" id="btnMapLayer" title="Змінити шар карти" aria-label="Змінити шар карти">🛰</button>
       <button class="map-btn" id="btnDepthToggle" title="Показати глибини" aria-label="Показати глибини">🌊</button>
       <button class="map-btn" id="btnMapLocate" title="Моє місце" aria-label="Моє місце">📍</button>
+      <button class="map-btn" id="btnPickerDraw" title="Обвести водойму" aria-label="Обвести водойму">✏️</button>
+      <button class="map-btn" id="btnPickerDeleteCustom" title="Видалити контур" aria-label="Видалити контур" style="display:none">🗑️</button>
     </div>
-    <div class="map-controls-bottom">
+    
+    <div class="map-controls-bottom" id="pickerControlsBottom">
+      
+      <!-- Блок малювання тепер знаходиться тут, над кнопкою підтвердження -->
+      <div id="drawOverlay" class="draw-overlay hidden">
+        <div class="draw-hint">
+          ✏️ Тапайте по берегу, щоб обвести контур. Точок: <strong id="drawCount">0</strong>
+          <span class="sub">Потрібно мінімум 3 точки. Потім «Завершити».</span>
+        </div>
+        <div class="draw-btns">
+          <button id="drawUndo" class="draw-btn">↩️ Точку</button>
+          <button id="drawFinish" class="draw-btn primary">✅ Завершити</button>
+          <button id="drawCancel" class="draw-btn danger">❌ Скасувати</button>
+        </div>
+      </div>
+
       <div class="map-coord-display" id="mapCoordDisplay">—</div>
       <button class="btn" id="btnMapConfirm">✅ Обрати цю точку</button>
       <button class="btn secondary" id="btnMapCancel">Скасувати</button>
@@ -362,6 +467,8 @@ const OVERPASS_MIRRORS = [
 const WATER_CACHE_KEY = "carp_water_body_v3";
 const WATER_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const CUSTOM_POLYGON_KEY = "carp_custom_polygons_v1";
+const HISTORY_KEY = "carp_history_v2";
+const MODE_KEY = "carp_ui_mode_v1";
 
 // ============================================================
 // УТИЛІТИ
@@ -397,6 +504,16 @@ function dayStartLocal(d) { const x = new Date(d); x.setHours(0,0,0,0); return x
 function addDaysLocal(d, n) { const x = new Date(d); x.setDate(x.getDate()+n); return x; }
 function calculateNormPressure(elev) {
   return Math.round((NORM_PRESSURE_SEA_LEVEL - elev/NORM_PRESSURE_GRADIENT_M)*10)/10;
+}
+function escapeHtml(value) {
+  const entities = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  };
+  return String(value ?? "").replace(/[&<>"']/g, ch => entities[ch]);
 }
 
 // ============================================================
@@ -615,12 +732,17 @@ function scoreTolstolob(trend, wTemp, m) {
   else if (trend === "SHARP_FALL" || trend === "SHARP_RISE") s -= 20;
   return clampScore(s + m);
 }
+
+// ВИПРАВЛЕНО: Порядок перевірок для хижаків
 function tempDeltaPredator(t, cmin, cmax, omin, omax, hotP, coldP) {
+  if (!Number.isFinite(t)) return 0;
   if (t >= cmin && t <= cmax) return 25;
-  if (t > cmax) return hotP;
-  if ((t >= omin && t < cmin) || (t > cmax && t <= omax)) return 10;
+  if (t >= omin && t < cmin) return 10;
+  if (t > cmax && t <= omax) return 10;
+  if (t > omax) return hotP;
   return coldP;
 }
+
 const PIKE_LIGHT = {twilight:25, dark:15, moonlit:10, overcast:10, bright:-10};
 const PERCH_LIGHT = {twilight:25, overcast:20, moonlit:5, dark:5, bright:-10};
 const ZANDER_LIGHT = {twilight:30, dark:20, moonlit:-10, overcast:10, bright:-20};
@@ -720,143 +842,7 @@ function predatorLabel(s) {
 }
 
 // ============================================================
-// ПОРАДИ
-// ============================================================
-function pressureAdvice(trend, fish, adv) {
-  if (trend === "SMOOTH_FALL") {
-    if (fish === "carp") { adv.tactics += "\n• Активне годування! Збільште порцію прикормки, великі насадки."; adv.gear += "\n• Гострі гачки для активної риби."; }
-    else if (fish === "amur") { adv.tactics += "\n• Падіння тиску активізує амура – виходить на мілководдя."; adv.groundbait += "\n• Більше зернової прикормки (горох, кукурудза)."; }
-    else if (fish === "tolstolob") { adv.tactics += "\n• Падіння тиску активізує товстолоба — піднімається до поверхні за планктоном."; adv.bait += "\n• Технопланктон і дрібні частки найкращі."; }
-    else { adv.groundbait += "\n• Тиск падає – карась активізується. Більші насадки."; adv.bait += "\n• Об'ємні насадки з яскравим запахом."; }
-  } else if (trend === "SHARP_FALL" || trend === "SHARP_RISE") {
-    if (fish === "carp") { adv.tactics += "\n• Риба пригнічена – малі порції, дрібні насадки (6-8 мм)."; adv.spot += "\n• Глибокі ями або зони з уповільненою течією."; }
-    else if (fish === "amur") { adv.tactics += "\n• Амур пасивний. Дрібні порції біля дна."; adv.spot += "\n• Ділянки з водною рослинністю."; }
-    else if (fish === "tolstolob") { adv.tactics += "\n• Товстолоб пригнічений. Дрібні порції біля дна."; adv.spot += "\n• Глибші ділянки (3-5 м)."; }
-    else { adv.groundbait += "\n• Карась пригнічений. Дуже малі порції."; adv.spot += "\n• Глибші місця (3-4 м) або мулисте дно."; adv.bait += "\n• Найкраще працює мотиль."; }
-  } else if (trend === "STABLE_HIGH") {
-    if (fish === "carp") adv.tactics += "\n• Високий стабільний тиск – риба адаптувалась. Не перегодовуйте.";
-    else if (fish === "amur") adv.tactics += "\n• Амур активний, рослинні насадки.";
-    else if (fish === "tolstolob") adv.tactics += "\n• Товстолоб менш активний, дрібні порції біля поверхні.";
-    else adv.groundbait += "\n• Риба адаптувалась. Не перегодовуйте.";
-  }
-  return adv;
-}
-function windAdvice(adv, wSpeed, wFrom, surfBank, fish) {
-  const knownBank = surfBank && surfBank !== "Невідомий";
-  if (wSpeed > WIND_WARM_THRESHOLD && knownBank) {
-    if (fish === "crucian") adv.spot += `\n• Вітер з ${wFrom} – шукайте ${surfBank}.`;
-    else if (fish === "amur") adv.spot += `\n• Вітер з ${wFrom} – шукайте ${surfBank}.`;
-    else if (fish === "tolstolob") adv.spot += `\n• Вітер з ${wFrom} – шукайте ${surfBank}.`;
-    else adv.spot += `\n• Вітер з ${wFrom}, акцент – на ${surfBank}.`;
-  } else if (wSpeed < WIND_STILL_THRESHOLD) {
-    if (fish === "crucian") adv.spot += "\n• Штиль – донка з повільною проводкою.";
-    else if (fish === "amur") adv.spot += "\n• Штиль – рослинні насадки, що повільно опускаються.";
-    else if (fish === "tolstolob") adv.spot += "\n• Штиль – технопланктон, що повільно опускається.";
-    else adv.spot += "\n• Штиль – Zig-Rig, або перенесіть на ніч/світанок.";
-  } else if (fish === "crucian" && wSpeed > WIND_STRONG_FOR_CRUCIAN) {
-    adv.spot += "\n• Сильний вітер – карась на глибині, шукайте захищені ділянки.";
-  }
-  return adv;
-}
-function precipCloudAdvice(adv, precip, cloud, fish) {
-  const p = precipCategory(precip);
-  if (p === "light") {
-    if (fish === "carp") { adv.tactics += "\n• Дощ активізує рибу – тваринні компоненти."; adv.spot += "\n• Риба виходить на мілководдя."; }
-    else if (fish === "amur") { adv.tactics += "\n• Легкий дощ – амур на мілководді."; adv.spot += "\n• Ділянки з ряскою."; }
-    else if (fish === "tolstolob") { adv.tactics += "\n• Товстолоб активніше годується."; adv.spot += "\n• Ділянки біля струмків."; }
-    else { adv.groundbait += "\n• Дрібний дощ – додайте опариша."; adv.spot += "\n• Карась на мілководді."; }
-  } else if (p === "heavy") {
-    if (fish === "carp") { adv.tactics += "\n• Сильний дощ – мінімум прикормки."; adv.spot += "\n• Глибші ділянки."; }
-    else if (fish === "amur") { adv.spot += "\n• Амур на глибині 2–4 м."; adv.bait += "\n• Прикормка з великими частками."; }
-    else if (fish === "tolstolob") { adv.spot += "\n• Товстолоб на глибині 3–5 м."; adv.bait += "\n• Прикормка, що повільно розпадається."; }
-    else { adv.groundbait += "\n• Мінімум прикормки."; adv.spot += "\n• Глибші ділянки або укриття (корчі, очерет)."; }
-  }
-  if (cloud < 30) {
-    adv.spot += "\n• Ясна погода – риба обережна; біля очерету, дерев, на глибині.";
-    if (fish === "crucian") adv.bait += "\n• Натуральні насадки без різких запахів.";
-    else if (fish === "amur") adv.spot += "\n• Амур глибше (2–4 м).";
-    else if (fish === "tolstolob") adv.spot += "\n• Товстолоб глибше (3–5 м).";
-  } else if (cloud > 70) {
-    adv.spot += "\n• Хмарно – риба сміливіше до берега.";
-    if (fish === "crucian") adv.bait += "\n• Можна додати ароматизаторів.";
-    else if (fish === "amur") adv.spot += "\n• Амур біля поверхні.";
-    else if (fish === "tolstolob") adv.spot += "\n• Товстолоб біля поверхні.";
-  }
-  return adv;
-}
-function buildPeacefulAdvice(fish, snap, trend) {
-  const base = {
-    carp: {spot:"• Бровки, виходи з ям, русловий стіл.", tactics:"• Підгодовування, перезакід раз на 1–2 год.", gear:"• Classic короповий або флет-фідерний монтаж.", groundbait:"• Поживна суміш середньої фракції (пеллетс, конопля, зернові).", bait:"• Бойли 12–14 мм, кукурудза з опаришем, тигровий горіх."},
-    crucian: {spot:"• Межі очерету, вікна серед латаття, мілководні затоки (1–2 м).", tactics:"• Порційне догодовування невеликими кульками.", gear:"• Легкий фідер (пікер) або поплавцева вудка.", groundbait:"• Дрібнофракційна прикормка з солодким ароматом.", bait:"• Опариш, гнійний черв'як, перловка, мастирка, пуфіки."},
-    amur: {spot:"• Ділянки з водною рослинністю, мілководні затоки (1.5–2.5 м).", tactics:"• Прикормка рослинного походження.", gear:"• Фідер або матчева вудка з тонким повідцем.", groundbait:"• Зернові суміші, горох, кукурудза, конопля.", bait:"• Молода кукурудза, горох, перловка, макуха."},
-    tolstolob: {spot:"• Відкриті плеса, зони з планктоном, глибина 2–4 м.", tactics:"• Прикормка з дрібними частинками.", gear:"• Фідер або поплавцева вудка з дрібними гачками.", groundbait:"• Дрібнофракційна прикормка, технопланктон, сухе молоко.", bait:"• Технопланктон, перловка, мотиль, опариш."}
-  }[fish];
-  let adv = {...base};
-  adv = pressureAdvice(trend, fish, adv);
-  adv = windAdvice(adv, snap.windSpeedMs, snap.windFrom, snap.surfBank, fish);
-  adv = precipCloudAdvice(adv, snap.precipNow, snap.cloudNow, fish);
-  return adv;
-}
-function windAdvicePredator(adv, wSpeed, wFrom, surfBank, fish) {
-  const knownBank = surfBank && surfBank !== "Невідомий";
-  if (wSpeed > PREDATOR_CHOP_MAX && knownBank) {
-    adv.spot += `\n• Сильний вітер (${wSpeed.toFixed(1)} м/с) з ${wFrom} — хижак тримається підвітряного берега.`;
-  } else if (wSpeed >= PREDATOR_CHOP_MIN && knownBank) {
-    adv.spot += `\n• Помірний вітер з ${wFrom} створює «ряб» — активізує хижака. Шукайте ${surfBank.toLowerCase()}.`;
-  } else if (wSpeed < PREDATOR_CALM_THRESHOLD) {
-    if (fish === "pike") adv.tactics += "\n• Штиль — щука обережна, довгі паузи.";
-    else if (fish === "perch") adv.tactics += "\n• Штиль — дрібні повільні приманки.";
-    else adv.tactics += "\n• Штиль — судак глибоко, важчий джиг.";
-  }
-  return adv;
-}
-function buildPredatorAdvice(fish, snap, trend, light) {
-  const base = {
-    pike: {spot:"• Межі очерету, корчі, затони на мілководді (1–2 м).", gear:"• Спінінг 2.4–2.7 м, тест 10–30 г, шнур 0.10–0.13 мм.", bait:"• Коливальні блешні, джеркбейти, силікон 10–15 см.", tactics:"• Повільна рівномірна проводка з паузами 2–3 с."},
-    perch: {spot:"• Піщані косі, підводні горби, глибина 2–4 м, корчі.", gear:"• Ультралайт спінінг 1.8–2.1 м, тест 1–7 г.", bait:"• Мікроджиг (1–3 г), твістер 1–2 дюйми.", tactics:"• Дрібні підкидання з паузою."},
-    zander: {spot:"• Ями, бровки, русло, глибина 4–8 м.", gear:"• Спінінг 2.4–2.7 м, тест 5–25 г, шнур 0.08–0.10 мм.", bait:"• Джиг 10–24 г + твістер/віброхвіст 2–3 дюйми, поролонка.", tactics:"• Ступінчаста проводка: 2–3 оберти + пауза 3–5 с."}
-  }[fish];
-  let adv = {...base};
-  if (fish === "pike") {
-    if (light === "bright") adv.spot += "\n• Яскраво — тінь дерев, глибина 2–3 м.";
-    else if (["twilight","dark","moonlit"].includes(light)) adv.spot += "\n• Сутінки/ніч — щука на мілководді.";
-  } else if (fish === "perch") {
-    if (light === "twilight" || light === "overcast") adv.spot += "\n• Сутінки/хмарно — окунь ближче до берега.";
-    else if (light === "bright") adv.spot += "\n• Яскраво — окунь у глибині або в тіні.";
-  } else {
-    if (light === "twilight") adv.spot += "\n• Сутінки — судак на 2–4 м.";
-    else if (light === "dark") adv.spot += "\n• Темна ніч — судак у верхніх шарах (2–5 м).";
-    else if (light === "moonlit") adv.spot += "\n• Повний місяць — судак глибше.";
-    else if (light === "bright") adv.spot += "\n• Яскравий день — тіньові ділянки.";
-  }
-  if (trend === "SMOOTH_FALL") {
-    if (fish === "pike") adv.tactics += "\n• Падіння тиску — агресивні приманки.";
-    else if (fish === "perch") adv.tactics += "\n• Падіння тиску — окунь зграйкою.";
-    else adv.tactics += "\n• Падіння тиску — найкращий час! Збільшіть темп проводки.";
-  } else if (trend === "SHARP_FALL" || trend === "SHARP_RISE") {
-    if (fish === "pike") adv.tactics += "\n• Нестабільний тиск — зменшіть розмір приманки.";
-  } else if (trend === "STABLE_HIGH" && fish === "zander") {
-    adv.tactics += "\n• Високий тиск — судак глибоко, важчі джиги.";
-  }
-  const p = precipCategory(snap.precipNow);
-  if (p === "heavy") {
-    if (fish === "pike") adv.bait += "\n• Після зливи — кислотні кольори.";
-    else if (fish === "zander") adv.bait += "\n• Після зливи — приманки з шумом.";
-  } else if (p === "light" && fish === "perch") {
-    adv.tactics += "\n• Легкий дощ — окунь менш обережний.";
-  }
-  adv = windAdvicePredator(adv, snap.windSpeedMs, snap.windFrom, snap.surfBank, fish);
-  return adv;
-}
-function aromaAdvice(wTemp) {
-  if (wTemp >= 24) return "🌞 Спека: легкі, фруктові аромати (ананас, полуниця, персик).\n• Рідкі ароматизатори на водній основі.";
-  if (wTemp >= 18) return "🌤️ Комфортна температура: універсальні аромати — карамель, ваніль, аніс, часник.";
-  if (wTemp >= 12) return "🌥️ Прохолодна вода: «м'ясні» аромати — креветка, краб, рибний запах.";
-  return "❄️ Холодна вода: мінімум ароматів. Тільки натуральні — черв'як, мотиль, опариш.";
-}
-
-// ============================================================
-// ВОДОЙМА (OSM)
+// ВОДОЙМА
 // ============================================================
 function _waterCacheGet(lat, lon) {
   try {
@@ -886,20 +872,18 @@ function _waterCacheSet(lat, lon, data) {
   } catch {}
 }
 
-// ============================================================
-// КАСТОМНИЙ ПОЛІГОН (намальований користувачем вручну)
-// ============================================================
 function _customPolygonGet(lat, lon) {
   try {
     const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
-    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
-    return all[key] || null;
+    const key4 = `${lat.toFixed(4)},${lon.toFixed(4)}`;
+    const key3 = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    return all[key4] || all[key3] || null;
   } catch { return null; }
 }
 function _customPolygonSet(lat, lon, coords) {
   try {
     const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
-    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    const key = `${lat.toFixed(4)},${lon.toFixed(4)}`;
     all[key] = coords;
     localStorage.setItem(CUSTOM_POLYGON_KEY, JSON.stringify(all));
     return true;
@@ -908,8 +892,10 @@ function _customPolygonSet(lat, lon, coords) {
 function _customPolygonDelete(lat, lon) {
   try {
     const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
-    const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
-    delete all[key];
+    const key4 = `${lat.toFixed(4)},${lon.toFixed(4)}`;
+    const key3 = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    delete all[key4];
+    delete all[key3];
     localStorage.setItem(CUSTOM_POLYGON_KEY, JSON.stringify(all));
   } catch {}
 }
@@ -1023,26 +1009,18 @@ async function fetchWaterBody(lat, lon) {
   const cached = _waterCacheGet(lat, lon);
   if (cached !== undefined) return cached;
 
-  const query = `[out:json][timeout:20];
+  const query = `[out:json][timeout:10];
 (
-  way(around:3000,${lat},${lon})["natural"="water"];
-  way(around:3000,${lat},${lon})["waterway"="riverbank"];
-  way(around:3000,${lat},${lon})["landuse"="reservoir"];
-  way(around:3000,${lat},${lon})["landuse"="basin"];
-  way(around:3000,${lat},${lon})["water"="lake"];
-  way(around:3000,${lat},${lon})["water"="pond"];
-  way(around:3000,${lat},${lon})["water"="reservoir"];
-  way(around:3000,${lat},${lon})["water"="river"];
-  relation(around:3000,${lat},${lon})["natural"="water"];
-  relation(around:3000,${lat},${lon})["waterway"="riverbank"];
-  relation(around:3000,${lat},${lon})["water"="lake"];
+  way(around:1500,${lat},${lon})["natural"="water"];
+  way(around:1500,${lat},${lon})["waterway"="riverbank"];
+  relation(around:1500,${lat},${lon})["natural"="water"];
 );
 out geom;`;
 
   for (const mirror of OVERPASS_MIRRORS) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
+      const timeout = setTimeout(() => controller.abort(), 6000);
       const resp = await fetch(mirror, {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -1056,19 +1034,22 @@ out geom;`;
       if (!polys.length) { _waterCacheSet(lat, lon, null); return null; }
 
       const containing = polys.find(p => pointInPolygon(lat, lon, p.coords));
-      let best;
-      if (containing) {
-        best = containing;
-      } else {
-        best = polys.slice().sort((a, b) => {
-          const da = distanceM([lat,lon], polygonCentroid(a.coords));
-          const db = distanceM([lat,lon], polygonCentroid(b.coords));
-          const areaA = polygonAreaM2(a.coords);
-          const areaB = polygonAreaM2(b.coords);
-          if (Math.abs(da - db) < 300) return areaB - areaA;
-          return da - db;
-        })[0];
+      let best = containing;
+
+      if (!best) {
+        let minDist = Infinity;
+        for (const p of polys) {
+          const distToPoly = Math.min(...p.coords.map(c => distanceM([lat,lon], c)));
+          if (distToPoly < minDist) {
+            minDist = distToPoly;
+            best = p;
+          }
+        }
+        if (minDist > 300) {
+          best = null;
+        }
       }
+
       _waterCacheSet(lat, lon, best);
       return best;
     } catch (e) {}
@@ -1176,8 +1157,12 @@ function buildSnapshot(weatherData, targetDate) {
   const tzOffsetSec = weatherData.utc_offset_seconds || 0;
   const locTarget = new Date(targetDate.getTime() + tzOffsetSec * 1000);
   const targetStr = isoHour(locTarget);
-  let idx = times.indexOf(targetStr);
-  if (idx < 0) idx = Math.max(0, times.length - 1);
+  
+  const idx = times.indexOf(targetStr);
+  if (idx < 0) {
+    throw new Error(`Немає погодинного прогнозу на ${targetStr}. Оберіть іншу дату або спробуйте пізніше.`);
+  }
+
   const pHistory = hourly.surface_pressure || [];
   const pNow = safeVal(pHistory, idx) * HPA_TO_MMHG;
   let p24hAgo = safeVal(pHistory, idx - HOURS_PER_DAY, pNow) * HPA_TO_MMHG;
@@ -1225,14 +1210,7 @@ function generatePeacefulReport(snap, targetDate, wbMod) {
   return {
     kind: "peaceful", trend, moonName: moon.name, snap, targetDate, wbMod,
     scores: {carp, crucian, amur, tolstolob},
-    labels: {carp: carpLabel(carp), crucian: crucianLabel(crucian), amur: amurLabel(amur), tolstolob: tolstolobLabel(tolstolob)},
-    advice: {
-      carp: buildPeacefulAdvice("carp", snap, trend.enum),
-      crucian: buildPeacefulAdvice("crucian", snap, trend.enum),
-      amur: buildPeacefulAdvice("amur", snap, trend.enum),
-      tolstolob: buildPeacefulAdvice("tolstolob", snap, trend.enum)
-    },
-    aroma: aromaAdvice(snap.waterTemp)
+    labels: {carp: carpLabel(carp), crucian: crucianLabel(crucian), amur: amurLabel(amur), tolstolob: tolstolobLabel(tolstolob)}
   };
 }
 function generatePredatorReport(snap, targetDate, wbMod) {
@@ -1248,12 +1226,7 @@ function generatePredatorReport(snap, targetDate, wbMod) {
   return {
     kind: "predator", trend, moonName: moon.name, tod, light, snap, targetDate, wbMod,
     scores: {pike, perch, zander},
-    labels: {pike: predatorLabel(pike), perch: predatorLabel(perch), zander: predatorLabel(zander)},
-    advice: {
-      pike: buildPredatorAdvice("pike", snap, trend.enum, light),
-      perch: buildPredatorAdvice("perch", snap, trend.enum, light),
-      zander: buildPredatorAdvice("zander", snap, trend.enum, light)
-    }
+    labels: {pike: predatorLabel(pike), perch: predatorLabel(perch), zander: predatorLabel(zander)}
   };
 }
 
@@ -1274,7 +1247,7 @@ function renderScoreRow(label, score, labelObj) {
 function renderWeatherGrid(snap, moonName) {
   return `<div class="weather-grid">
     <span class="k">🌡 Повітря</span><span class="v">${snap.tNow.toFixed(1)} °C</span>
-    <span class="k">💧 Вода</span><span class="v">${snap.waterTemp.toFixed(1)} °C</span>
+    <span class="k">💧 Вода (розрах.)</span><span class="v" title="Орієнтовна температура води за погодними даними">${snap.waterTemp.toFixed(1)} °C</span>
     <span class="k">📉 Тиск</span><span class="v">${snap.pNow.toFixed(1)} мм</span>
     <span class="k">⬇️ Зміна 24г</span><span class="v">${snap.p24hDelta >= 0 ? "+" : ""}${snap.p24hDelta.toFixed(1)} мм</span>
     <span class="k">🌬 Вітер</span><span class="v">${snap.windSpeedMs.toFixed(1)} м/с, ${snap.windFrom}</span>
@@ -1282,22 +1255,12 @@ function renderWeatherGrid(snap, moonName) {
     <span class="k">☁️ Хмарність</span><span class="v">${Math.round(snap.cloudNow)} %</span>
     <span class="k">🌧 Опади</span><span class="v">${snap.precipNow.toFixed(2)} мм/год</span>
     <span class="k">🌙 Місяць</span><span class="v">${moonName}</span>
-  </div>`;
-}
-function renderAdviceDetails(title, adv) {
-  const sections = [
-    ["📍 Точки лову", adv.spot],
-    ["🏹 Тактика", adv.tactics],
-    ["🏗 Снасті", adv.gear],
-    ["🥣 Прикормка", adv.groundbait],
-    ["🪝 Насадки", adv.bait]
-  ].filter(([_, v]) => v && v.trim());
-  const content = sections.map(([t, v]) => `<h3>${t}</h3><div style="white-space:pre-line;font-size:14px">${v}</div>`).join("");
-  return `<details><summary>${title}</summary><div class="content">${content}</div></details>`;
+  </div>
+  <div class="hint" style="margin-top:6px;">* Температура води розрахована за температурою повітря (може відрізнятися від реальної).</div>`;
 }
 function renderWaterBodyInfo(wbMod) {
   if (!wbMod || wbMod.areaHa == null) return "";
-  const name = wbMod.name ? `<strong>${wbMod.name}</strong> · ` : "";
+  const name = wbMod.name ? `<strong>${escapeHtml(wbMod.name)}</strong> · ` : "";
   const area = wbMod.areaHa < 1
     ? `${(wbMod.areaHa * 10000).toFixed(0)} м²`
     : `${wbMod.areaHa.toFixed(1)} га`;
@@ -1329,43 +1292,41 @@ function renderReportMapBlock(windFrom, windSpeedMs, isPredator, wbMod) {
   const legendBlue = `<span><span class="dot" style="background:#58a6ff"></span>Ви тут</span>`;
   const hasWb = wbMod && wbMod.areaHa != null;
   const custom = _customPolygonGet(state.lat, state.lon);
+  
+  let warningHtml = "";
+  if (!hasWb) {
+    warningHtml = `<div class="warn" style="margin-top:10px; font-size: 13px;">
+      ⚠️ Не вдалося автоматично завантажити контур.<br>
+      <button class="btn secondary" style="margin-top:8px; padding: 10px; font-size: 14px;" onclick="showScreen('map')">✏️ Намалювати контур вручну</button>
+    </div>`;
+  }
+
   const hint = isPredator
     ? `💨 Хижаки: помірний «ряб» на навітряному березі. Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`
     : `💨 Мирна риба: підвітряний берег (зелений). Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`;
   const customHint = custom
     ? `<div class="hint" style="color:#ff9800">✏️ Використовується ваш намальований контур</div>`
-    : `<div class="hint">💡 Якщо контур невірний — натисніть ✏️ щоб обвести вручну</div>`;
+    : `<div class="hint">💡 Якщо контур невірний — поверніться і обведіть вручну на карті.</div>`;
   return `
-    <div class="card">
+    <div class="card wide">
       <h2>🗺 Рекомендований берег</h2>
-      <div class="report-map" id="reportMap">
-        <div class="report-map-controls">
+      <div class="report-map-wrap" id="reportMapWrap">
+        <div class="report-map" id="reportMap"></div>
+        <div class="report-map-controls" id="reportMapControls">
           <button class="report-map-btn" id="btnReportFullscreen" title="На весь екран" aria-label="На весь екран">⛶</button>
           <button class="report-map-btn" id="btnReportDepth" title="Глибини" aria-label="Глибини">🌊</button>
           <button class="report-map-btn" id="btnReportLayer" title="Шар" aria-label="Шар карти">🛰</button>
-          <button class="report-map-btn" id="btnReportDraw" title="Обвести контур вручну" aria-label="Обвести контур">✏️</button>
-          <button class="report-map-btn danger" id="btnReportDeleteCustom" title="Видалити власний контур" aria-label="Видалити контур" style="display:none">🗑️</button>
-        </div>
-        <div id="drawOverlay" class="draw-overlay hidden">
-          <div class="draw-hint">
-            ✏️ Тапайте по берегу, щоб обвести контур. Точок: <strong id="drawCount">0</strong>
-            <span class="sub">Потрібно мінімум 3 точки. Потім «Завершити».</span>
-          </div>
-          <div class="draw-btns">
-            <button id="drawUndo" class="draw-btn">↩️ Точку</button>
-            <button id="drawFinish" class="draw-btn primary">✅ Завершити</button>
-            <button id="drawCancel" class="draw-btn danger">❌ Скасувати</button>
-          </div>
         </div>
       </div>
       <div class="map-legend">${legendBlue}${legendLeeward}${legendYellow}${legendWindward}</div>
-      <div class="hint">${hasWb ? "🎯 жовта мітка + стрілка — рекомендоване місце" : "Контур водойми не знайдено в OSM"}</div>
+      <div class="hint">${hasWb ? "🎯 жовта мітка — рекомендоване місце" : "Контур водойми не знайдено"}</div>
       <div class="hint">${hint}</div>
       ${customHint}
+      ${warningHtml}
     </div>`;
 }
 function renderPeacefulReport(report) {
-  const {scores, labels, snap, trend, moonName, targetDate, advice, aroma, wbMod} = report;
+  const {scores, labels, snap, trend, moonName, targetDate, wbMod} = report;
   const dateStr = `${targetDate.getFullYear()}-${pad2(targetDate.getMonth()+1)}-${pad2(targetDate.getDate())} ${pad2(targetDate.getHours())}:00`;
   return `
     <div class="card">
@@ -1380,7 +1341,7 @@ function renderPeacefulReport(report) {
       <h2>🌤 Погода · ${dateStr}</h2>
       ${renderWeatherGrid(snap, moonName)}
     </div>
-    <div class="card">
+    <div class="card wide">
       <h2>ℹ️ Тренд тиску</h2>
       <div class="trend-box">
         <div class="trend-title">${trend.label}</div>
@@ -1388,30 +1349,19 @@ function renderPeacefulReport(report) {
       </div>
     </div>
     ${renderReportMapBlock(snap.windFrom, snap.windSpeedMs, false, wbMod)}
-    <div class="card">
+    <div class="card wide">
       <h2>📈 Активність мирних · 11 днів</h2>
       <div class="chart-wrap tall"><canvas id="chart11"></canvas></div>
       <div class="hint">Середнє за світловий день 05:00–21:00 · 🌑🌒🌓… під віссю — фаза місяця</div>
     </div>
-    <div class="card">
+    <div class="card wide">
       <h2>📉 Тиск · 7 днів історії + прогноз</h2>
       <div class="chart-wrap pressure"><canvas id="chartP"></canvas></div>
       <div class="hint">Оранжева пунктирна — «зараз». Червона — обраний час лову.</div>
-    </div>
-    <div class="card">
-      <h2>Рекомендації</h2>
-      ${renderAdviceDetails("👑 Короп", advice.carp)}
-      ${renderAdviceDetails("🐡 Карась", advice.crucian)}
-      ${renderAdviceDetails("🐠 Білий амур", advice.amur)}
-      ${renderAdviceDetails("🐟 Товстолоб", advice.tolstolob)}
-    </div>
-    <div class="card">
-      <h2>👃 Ароматика</h2>
-      <div style="white-space:pre-line;font-size:14px">${aroma}</div>
     </div>`;
 }
 function renderPredatorReport(report) {
-  const {scores, labels, snap, trend, moonName, targetDate, advice, light, tod, wbMod} = report;
+  const {scores, labels, snap, trend, moonName, targetDate, light, tod, wbMod} = report;
   const dateStr = `${targetDate.getFullYear()}-${pad2(targetDate.getMonth()+1)}-${pad2(targetDate.getDate())} ${pad2(targetDate.getHours())}:00`;
   return `
     <div class="card">
@@ -1420,16 +1370,16 @@ function renderPredatorReport(report) {
       ${renderScoreRow("🐟 Окунь", scores.perch, labels.perch)}
       ${renderScoreRow("🐡 Судак", scores.zander, labels.zander)}
     </div>
-    ${renderWaterBodyInfo(wbMod)}
     <div class="card">
       <h2>🌅 Умови освітлення</h2>
       <div style="font-size:14px">${lightLabel(light)} · ${todLabel(tod)}</div>
     </div>
+    ${renderWaterBodyInfo(wbMod)}
     <div class="card">
       <h2>🌤 Погода · ${dateStr}</h2>
       ${renderWeatherGrid(snap, moonName)}
     </div>
-    <div class="card">
+    <div class="card wide">
       <h2>ℹ️ Тренд тиску</h2>
       <div class="trend-box">
         <div class="trend-title">${trend.label}</div>
@@ -1437,21 +1387,15 @@ function renderPredatorReport(report) {
       </div>
     </div>
     ${renderReportMapBlock(snap.windFrom, snap.windSpeedMs, true, wbMod)}
-    <div class="card">
+    <div class="card wide">
       <h2>📈 Активність хижаків · 24 години</h2>
       <div class="chart-wrap tall"><canvas id="chart24"></canvas></div>
       <div class="hint">Золоті вертикальні зони — світанок (05–07) та захід (18–20)</div>
     </div>
-    <div class="card">
+    <div class="card wide">
       <h2>📉 Тиск · 7 днів історії + прогноз</h2>
       <div class="chart-wrap pressure"><canvas id="chartP"></canvas></div>
       <div class="hint">Оранжева пунктирна — «зараз». Червона — обраний час лову.</div>
-    </div>
-    <div class="card">
-      <h2>Рекомендації</h2>
-      ${renderAdviceDetails("🦈 Щука", advice.pike)}
-      ${renderAdviceDetails("🐟 Окунь", advice.perch)}
-      ${renderAdviceDetails("🐡 Судак", advice.zander)}
     </div>`;
 }
 
@@ -1720,11 +1664,28 @@ let pickerDepthEnabled = false;
 let reportDepthEnabled = true;
 
 const TILES = {
-  osm: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-         attribution: '© OpenStreetMap', maxZoom: 19, needsLabels: false },
-  satellite: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-               attribution: '© Esri, Maxar, Earthstar Geographics', maxZoom: 19, needsLabels: true }
+  satellite: {
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attribution: '© Esri, Maxar, Earthstar Geographics',
+    maxZoom: 19,
+    needsLabels: true
+  },
+  topo: {
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+    attribution: '© Esri, HERE, Garmin, FAO, NOAA, USGS',
+    maxZoom: 19,
+    needsLabels: false
+  },
+  osm: {
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    attribution: '© Esri, HERE, Garmin, USGS, EPA',
+    maxZoom: 19,
+    needsLabels: false
+  }
 };
+const LAYER_ORDER = ["satellite", "topo", "osm"];
+const LAYER_ICONS = { satellite: "🛰", topo: "⛰", osm: "🗺" };
+
 const DEPTH_TILE_URL = "https://tiles.openseamap.org/depth/{z}/{x}/{y}.png";
 const ESRI_PLACES_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
 const ESRI_ROADS_URL  = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}";
@@ -1745,6 +1706,9 @@ const _drawState = {
 function _resetDrawingState() {
   if (_drawState.map) {
     try { _drawState.map.off("click", _onDrawClick); } catch (e) {}
+    if (_drawState.pendingLayer) {
+      _drawState.map.removeLayer(_drawState.pendingLayer);
+    }
   }
   _drawState.active = false;
   _drawState.points = [];
@@ -1752,13 +1716,12 @@ function _resetDrawingState() {
   _drawState.line = null;
   _drawState.map = null;
   _drawState.pendingLayer = null;
+  
   const overlay = document.getElementById("drawOverlay");
   if (overlay) overlay.classList.add("hidden");
-  const btn = document.getElementById("btnReportDraw");
-  if (btn) {
-    btn.textContent = "✏️";
-    btn.classList.remove("active");
-  }
+  
+  const btn = document.getElementById("btnPickerDraw");
+  if (btn) btn.classList.remove("active");
 }
 
 function _onDrawClick(e) {
@@ -1807,6 +1770,12 @@ function _undoDrawPoint() {
 
 function startDrawingMode(map) {
   if (!map) return;
+  
+  if (map._customPolygonLayer) {
+    map.removeLayer(map._customPolygonLayer);
+    map._customPolygonLayer = null;
+  }
+
   _drawState.active = true;
   _drawState.points = [];
   _drawState.markers = [];
@@ -1819,11 +1788,8 @@ function startDrawingMode(map) {
   const cnt = document.getElementById("drawCount");
   if (cnt) cnt.textContent = "0";
 
-  const btn = document.getElementById("btnReportDraw");
-  if (btn) {
-    btn.textContent = "✏️";
-    btn.classList.add("active");
-  }
+  const btn = document.getElementById("btnPickerDraw");
+  if (btn) btn.classList.add("active");
 
   map.on("click", _onDrawClick);
   map.getContainer().style.cursor = "crosshair";
@@ -1836,10 +1802,21 @@ function finishDrawingMode() {
     alert("Потрібно мінімум 3 точки. Тапніть ще " + (3 - pts.length) + ".");
     return;
   }
-  _customPolygonSet(state.lat, state.lon, pts);
+  
+  const center = _drawState.map.getCenter();
+  _customPolygonSet(center.lat, center.lng, pts);
+  
   _resetDrawingState();
-  // Перемалювати звіт з новим контуром
-  runForecast(state.mode);
+  
+  if (pickerMap) {
+    if (pickerMap._customPolygonLayer) {
+      pickerMap.removeLayer(pickerMap._customPolygonLayer);
+    }
+    pickerMap._customPolygonLayer = L.polygon(pts, {
+      color: "#ff9800", weight: 3, fillColor: "#ff9800", fillOpacity: 0.15
+    }).addTo(pickerMap);
+    $("btnPickerDeleteCustom").style.display = "flex";
+  }
 }
 
 function cancelDrawingMode() {
@@ -1857,8 +1834,12 @@ function applyTile(map, type) {
   if (map._customTile) { map.removeLayer(map._customTile); map._customTile = null; }
   if (map._labelsLayer) { map.removeLayer(map._labelsLayer); map._labelsLayer = null; }
   if (map._roadsLayer) { map.removeLayer(map._roadsLayer); map._roadsLayer = null; }
-  const t = TILES[type];
-  map._customTile = L.tileLayer(t.url, {attribution: t.attribution, maxZoom: t.maxZoom}).addTo(map);
+  const t = TILES[type] || TILES.satellite;
+  map._customTile = L.tileLayer(t.url, {
+    attribution: t.attribution,
+    maxZoom: t.maxZoom,
+    crossOrigin: true
+  }).addTo(map);
   if (t.needsLabels) {
     ensureLabelsPane(map);
     map._roadsLayer = L.tileLayer(ESRI_ROADS_URL, {attribution: ESRI_REF_ATTR, maxZoom: t.maxZoom, opacity: 0.85, pane: "labelsPane"}).addTo(map);
@@ -1950,24 +1931,9 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
   }
 
   const arrowGroup = L.layerGroup();
-  if (segments && segments.length && state.lat != null && state.lon != null) {
+  if (segments && segments.length) {
     const bestSeg = segments.reduce((a, b) => (a.score > b.score ? a : b));
-    const userPt = [state.lat, state.lon];
     const targetPt = bestSeg.mid;
-    const dist = Math.round(distanceM(userPt, targetPt));
-
-    L.polyline([userPt, targetPt], {
-      color: "#ffd700", weight: 2, opacity: 0.9, dashArray: "6,4"
-    }).addTo(arrowGroup);
-
-    const midPt = [(userPt[0] + targetPt[0]) / 2, (userPt[1] + targetPt[1]) / 2];
-    L.marker(midPt, {
-      icon: L.divIcon({
-        className: "dist-label",
-        html: `<div style="background:rgba(13,17,23,.95);color:#ffd700;padding:4px 9px;border-radius:6px;font-size:12px;font-weight:700;white-space:nowrap;border:1.5px solid #ffd700;box-shadow:0 2px 6px rgba(0,0,0,.5);">🎯 ${dist} м</div>`,
-        iconSize: [0, 0]
-      })
-    }).addTo(arrowGroup);
 
     L.circleMarker(targetPt, {
       radius: 6, fillColor: "#ffd700", color: "#ffffff",
@@ -1976,7 +1942,7 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
 
     L.circleMarker(targetPt, {
       radius: 11, fillColor: "#ffd700", color: "#ffd700",
-      weight: 1, fillOpacity: 0.15
+      weight: 1, fillOpacity: 0.2
     }).addTo(arrowGroup);
   }
   arrowGroup.addTo(map);
@@ -2005,6 +1971,7 @@ function toggleFullscreen(el) {
       if (reportMap) reportMap.invalidateSize();
     }, 200);
   }));
+
 function openPickerMap() {
   showScreen("map");
   requestAnimationFrame(() => {
@@ -2012,7 +1979,10 @@ function openPickerMap() {
       const startLat = state.lat || 49.0;
       const startLon = state.lon || 31.0;
       const startZoom = state.lat ? 15 : 6;
-      pickerMap = L.map("pickerMap", {center: [startLat, startLon], zoom: startZoom, zoomControl: false, attributionControl: true});
+      pickerMap = L.map("pickerMap", {
+        center: [startLat, startLon], zoom: startZoom,
+        zoomControl: false, attributionControl: true
+      });
       ensureLabelsPane(pickerMap);
       applyTile(pickerMap, currentLayerType);
       pickerMap.on("move", updatePickerCoordLabel);
@@ -2023,6 +1993,22 @@ function openPickerMap() {
     }
     toggleDepthLayer(pickerMap, pickerDepthEnabled);
     updateDepthButtonState(pickerDepthEnabled);
+    $("btnMapLayer").textContent = LAYER_ICONS[currentLayerType];
+    
+    const custom = _customPolygonGet(state.lat, state.lon);
+    if (pickerMap._customPolygonLayer) {
+      pickerMap.removeLayer(pickerMap._customPolygonLayer);
+      pickerMap._customPolygonLayer = null;
+    }
+    if (custom && custom.length >= 3) {
+      pickerMap._customPolygonLayer = L.polygon(custom, {
+        color: "#ff9800", weight: 3, fillColor: "#ff9800", fillOpacity: 0.15
+      }).addTo(pickerMap);
+      $("btnPickerDeleteCustom").style.display = "flex";
+    } else {
+      $("btnPickerDeleteCustom").style.display = "none";
+    }
+    
     pickerMap.invalidateSize();
     updatePickerCoordLabel();
   });
@@ -2040,21 +2026,22 @@ function updateDepthButtonState(enabled) {
 }
 function renderReportMap(containerId, snap, waterBody, mode) {
   requestAnimationFrame(() => {
-    const el = document.getElementById(containerId);
-    if (!el) return;
+    const el = document.getElementById("reportMap");
+    const wrapEl = document.getElementById("reportMapWrap");
+    if (!el || !wrapEl) return;
+    
     if (reportMap) { reportMap.remove(); reportMap = null; }
-    // Скидаємо стан малювання
     _resetDrawingState();
 
     const center = [state.lat, state.lon];
-    const localMap = L.map(containerId, {
+    const localMap = L.map("reportMap", {
       center, zoom: 16, zoomControl: false, dragging: true, touchZoom: true,
       scrollWheelZoom: false, doubleClickZoom: true, boxZoom: false,
       keyboard: false, tap: true, attributionControl: false
     });
     reportMap = localMap;
     ensureLabelsPane(localMap);
-    applyTile(localMap, "satellite");
+    applyTile(localMap, currentLayerType);
 
     if (waterBody && waterBody.coords) {
       const segments = computeShoreline(waterBody.coords, snap.windDirDeg, snap.windSpeedMs, mode);
@@ -2081,64 +2068,39 @@ function renderReportMap(containerId, snap, waterBody, mode) {
       localMap.setView(center, 17);
     }
 
-    // Синій кружок позиції
-    L.circleMarker(center, {
+    const myMarker = L.circleMarker(center, {
       radius: 9, fillColor: "#58a6ff", color: "#ffffff", weight: 4, fillOpacity: 1
     }).addTo(localMap);
-    L.circleMarker(center, {
+    const myMarkerBg = L.circleMarker(center, {
       radius: 16, fillColor: "#58a6ff", color: "#58a6ff", weight: 1, fillOpacity: 0.2
     }).addTo(localMap);
+    myMarker.bringToFront();
+    myMarkerBg.bringToFront();
 
     toggleDepthLayer(localMap, reportDepthEnabled);
     updateReportDepthButtonState();
     setTimeout(() => { if (localMap) localMap.invalidateSize(); }, 100);
 
-    // Кнопки управління
     const btnLayer = document.getElementById("btnReportLayer");
     const btnDepth = document.getElementById("btnReportDepth");
     const btnFs = document.getElementById("btnReportFullscreen");
-    const btnDraw = document.getElementById("btnReportDraw");
-    const btnDeleteCustom = document.getElementById("btnReportDeleteCustom");
-    const drawOverlay = document.getElementById("drawOverlay");
-    const drawUndo = document.getElementById("drawUndo");
-    const drawFinish = document.getElementById("drawFinish");
-    const drawCancel = document.getElementById("drawCancel");
 
-    // Чи є кастомний полігон для цієї точки?
-    const hasCustom = !!_customPolygonGet(state.lat, state.lon);
-    if (btnDeleteCustom) {
-      btnDeleteCustom.style.display = hasCustom ? "flex" : "none";
-      btnDeleteCustom.onclick = () => {
-        if (confirm("Видалити ваш намальований контур?\n\nБуде використано дані OpenStreetMap (якщо є).")) {
-          _customPolygonDelete(state.lat, state.lon);
-          runForecast(state.mode);
-        }
+    if (btnLayer) {
+      btnLayer.textContent = LAYER_ICONS[currentLayerType];
+      btnLayer.onclick = () => {
+        const idx = LAYER_ORDER.indexOf(currentLayerType);
+        currentLayerType = LAYER_ORDER[(idx + 1) % LAYER_ORDER.length];
+        applyTile(localMap, currentLayerType);
+        btnLayer.textContent = LAYER_ICONS[currentLayerType];
+        reorderMapLayers(localMap);
       };
     }
-
-    if (btnLayer) btnLayer.onclick = () => {
-      currentLayerType = currentLayerType === "satellite" ? "osm" : "satellite";
-      applyTile(localMap, currentLayerType);
-      btnLayer.textContent = currentLayerType === "satellite" ? "🛰" : "🗺";
-      reorderMapLayers(localMap);
-    };
     if (btnDepth) btnDepth.onclick = () => {
       reportDepthEnabled = !reportDepthEnabled;
       toggleDepthLayer(localMap, reportDepthEnabled);
       updateReportDepthButtonState();
     };
-    if (btnFs) btnFs.onclick = () => toggleFullscreen(el);
-
-    if (btnDraw) {
-      btnDraw.onclick = () => {
-        if (_drawState.active) return;
-        startDrawingMode(localMap);
-      };
-    }
-
-    if (drawUndo) drawUndo.onclick = _undoDrawPoint;
-    if (drawFinish) drawFinish.onclick = finishDrawingMode;
-    if (drawCancel) drawCancel.onclick = cancelDrawingMode;
+    if (btnFs) btnFs.onclick = () => toggleFullscreen(wrapEl);
   });
 }
 function updateReportDepthButtonState() {
@@ -2163,6 +2125,7 @@ const topbarBack = $("topbarBack");
 const topbarTitle = $("topbarTitle");
 function showScreen(name) {
   state.screen = name;
+  document.body.classList.toggle("screen-map-active", name === "map");
   [screenInput, screenSelect, screenReport, screenMap].forEach(el => { if (el) el.classList.remove("active"); });
   if (name === "input") {
     screenInput.classList.add("active"); topbarBack.classList.add("hidden");
@@ -2190,13 +2153,55 @@ topbarBack.addEventListener("click", () => {
 // ============================================================
 // ІСТОРІЯ
 // ============================================================
-const HISTORY_KEY = "carp_history_v1";
-function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; } }
-function saveHistory(h) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0, 5))); } catch {} }
-function addToHistory(lat, lon) {
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+function saveHistory(h) {
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); }
+  catch {}
+}
+function addToHistory(lat, lon, name) {
   const h = loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001));
-  h.unshift({lat, lon, t: Date.now()});
-  saveHistory(h); renderHistory();
+  h.unshift({lat, lon, name: name || null, t: Date.now()});
+  saveHistory(h);
+  renderHistory();
+}
+function deleteHistoryItem(lat, lon) {
+  const h = loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001));
+  saveHistory(h);
+  renderHistory();
+}
+function renameHistoryItem(lat, lon) {
+  const h = loadHistory();
+  const item = h.find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
+  if (!item) return;
+  const current = item.name || "";
+  const name = prompt("Введіть назву для цієї локації:", current);
+  if (name === null) return;
+  item.name = name.trim() || null;
+  saveHistory(h);
+  renderHistory();
+}
+function shareHistoryItem(lat, lon) {
+  const h = loadHistory();
+  const item = h.find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
+  const name = item && item.name ? item.name : "";
+  const baseUrl = window.location.origin + window.location.pathname;
+  const url = `${baseUrl}?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}${name ? '&name=' + encodeURIComponent(name) : ''}`;
+  const title = name || `📍 ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+
+  if (navigator.share) {
+    navigator.share({ title: "Кльов — прогноз", text: title, url }).catch(() => {
+      navigator.clipboard.writeText(url).then(() => alert("Посилання скопійовано!")).catch(() => prompt("Скопіюйте вручну:", url));
+    });
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Посилання скопійовано! Надішліть його другу.");
+    }).catch(() => {
+      prompt("Скопіюйте посилання вручну:", url);
+    });
+  }
 }
 function renderHistory() {
   const h = loadHistory();
@@ -2204,15 +2209,43 @@ function renderHistory() {
   const list = $("historyList");
   if (h.length === 0) { card.style.display = "none"; return; }
   card.style.display = "block";
-  list.innerHTML = h.map(x => `<button class="history-item" data-lat="${x.lat}" data-lon="${x.lon}">📍 ${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}</button>`).join("");
-  list.querySelectorAll(".history-item").forEach(btn => {
-    btn.addEventListener("click", () => {
-      state.lat = parseFloat(btn.dataset.lat);
-      state.lon = parseFloat(btn.dataset.lon);
+  list.innerHTML = h.map(x => {
+    const title = escapeHtml(x.name || `Локація (${x.lat.toFixed(4)})`);
+    const coords = `${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}`;
+    return `<div class="history-item">
+      <div class="history-main" data-lat="${x.lat}" data-lon="${x.lon}">
+        <div class="h-name">${title}</div>
+        <div class="h-coords">${coords}</div>
+      </div>
+      <div class="history-actions">
+        <button class="history-btn" data-action="rename" data-lat="${x.lat}" data-lon="${x.lon}" title="Перейменувати">✏️</button>
+        <button class="history-btn" data-action="share" data-lat="${x.lat}" data-lon="${x.lon}" title="Поділитися">📤</button>
+        <button class="history-btn" data-action="delete" data-lat="${x.lat}" data-lon="${x.lon}" title="Видалити">🗑️</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  list.querySelectorAll(".history-main").forEach(el => {
+    el.addEventListener("click", () => {
+      state.lat = parseFloat(el.dataset.lat);
+      state.lon = parseFloat(el.dataset.lon);
       goToSelect();
     });
   });
+  list.querySelectorAll(".history-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const lat = parseFloat(btn.dataset.lat);
+      const lon = parseFloat(btn.dataset.lon);
+      const action = btn.dataset.action;
+      if (action === "rename") renameHistoryItem(lat, lon);
+      else if (action === "delete") {
+        if (confirm("Видалити цю локацію з історії?")) deleteHistoryItem(lat, lon);
+      } else if (action === "share") shareHistoryItem(lat, lon);
+    });
+  });
 }
+
 function updateDateChips() {
   const today = new Date();
   for (let i = 0; i < 3; i++) {
@@ -2241,10 +2274,11 @@ async function runForecast(mode) {
   }
   destroyAllCharts();
   _resetDrawingState();
+  
   screenReport.innerHTML = `<div class="loading"><div class="spinner"></div><div>Отримую метеодані та контур водойми...</div></div>`;
   showScreen("report");
+
   try {
-    // Пріоритет: спочатку кастомний полігон (намальований вручну), потім OSM
     const custom = _customPolygonGet(state.lat, state.lon);
     const waterBodyPromise = (custom && custom.length >= 3)
       ? Promise.resolve({ coords: custom, tags: {name: "Намальований вручну"}, id: "custom" })
@@ -2254,7 +2288,9 @@ async function runForecast(mode) {
       fetchWeather(state.lat, state.lon),
       waterBodyPromise
     ]);
+    
     if (token !== _forecastToken) return;
+    
     state.weatherData = weatherData;
     state.waterBody = waterBody;
     const wbMod = computeWbMod(waterBody);
@@ -2274,7 +2310,7 @@ async function runForecast(mode) {
     }, 150);
   } catch (err) {
     if (token !== _forecastToken) return;
-    screenReport.innerHTML = `<div class="card"><div class="error">❌ ${err.message}</div>
+    screenReport.innerHTML = `<div class="card"><div class="error">❌ ${escapeHtml(err.message)}</div>
       <button class="btn secondary" onclick="showScreen('select')">← Назад</button></div>`;
   }
 }
@@ -2312,6 +2348,19 @@ $("btnManual").addEventListener("click", () => {
   state.lat = lat; state.lon = lon;
   goToSelect();
 });
+$("btnClearAllData").addEventListener("click", () => {
+  if (!confirm("Ви впевнені? Це видалить:\n\n• Всю історію локацій\n• Всі намальовані контури\n• Кеш погоди\n• Налаштування інтерфейсу\n\nДію не можна скасувати.")) return;
+  try {
+    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(CUSTOM_POLYGON_KEY);
+    localStorage.removeItem(WATER_CACHE_KEY);
+    localStorage.removeItem(MODE_KEY);
+  } catch (e) {}
+  renderHistory();
+  alert("✅ Всі дані очищено.");
+  showScreen("input");
+  location.reload();
+});
 document.querySelectorAll("#dateChips .chip").forEach(chip => {
   chip.addEventListener("click", () => {
     document.querySelectorAll("#dateChips .chip").forEach(c => c.classList.remove("active"));
@@ -2322,9 +2371,18 @@ document.querySelectorAll("#dateChips .chip").forEach(chip => {
 document.querySelectorAll(".mode-card").forEach(card => {
   card.addEventListener("click", () => runForecast(card.dataset.mode));
 });
+
+// Кнопки селектора карти
 $("btnMapCancel").addEventListener("click", () => showScreen("input"));
 $("btnMapConfirm").addEventListener("click", () => {
   if (!pickerMap) return;
+  
+  if (pickerMap._customPolygonLayer) {
+    const pts = pickerMap._customPolygonLayer.getLatLngs()[0].map(p => [p.lat, p.lng]);
+    const c = pickerMap.getCenter();
+    _customPolygonSet(c.lat, c.lng, pts);
+  }
+  
   const c = pickerMap.getCenter();
   state.lat = c.lat; state.lon = c.lng;
   $("inpLat").value = c.lat.toFixed(5);
@@ -2332,8 +2390,9 @@ $("btnMapConfirm").addEventListener("click", () => {
   goToSelect();
 });
 $("btnMapLayer").addEventListener("click", () => {
-  currentLayerType = currentLayerType === "satellite" ? "osm" : "satellite";
-  $("btnMapLayer").textContent = currentLayerType === "satellite" ? "🛰" : "🗺";
+  const idx = LAYER_ORDER.indexOf(currentLayerType);
+  currentLayerType = LAYER_ORDER[(idx + 1) % LAYER_ORDER.length];
+  $("btnMapLayer").textContent = LAYER_ICONS[currentLayerType];
   applyTile(pickerMap, currentLayerType);
 });
 $("btnDepthToggle").addEventListener("click", () => {
@@ -2351,6 +2410,22 @@ $("btnMapLocate").addEventListener("click", () => {
   });
 });
 $("btnMapFullscreen").addEventListener("click", () => toggleFullscreen(screenMap));
+$("btnPickerDraw").addEventListener("click", () => startDrawingMode(pickerMap));
+$("btnPickerDeleteCustom").addEventListener("click", () => {
+  if (!pickerMap) return;
+  if (confirm("Видалити ваш намальований контур?")) {
+    const c = pickerMap.getCenter();
+    _customPolygonDelete(c.lat, c.lng);
+    if (pickerMap._customPolygonLayer) {
+      pickerMap.removeLayer(pickerMap._customPolygonLayer);
+      pickerMap._customPolygonLayer = null;
+    }
+    $("btnPickerDeleteCustom").style.display = "none";
+  }
+});
+$("drawUndo").addEventListener("click", _undoDrawPoint);
+$("drawFinish").addEventListener("click", finishDrawingMode);
+$("drawCancel").addEventListener("click", cancelDrawingMode);
 
 // ============================================================
 // PWA
@@ -2389,6 +2464,50 @@ $("btnMapFullscreen").addEventListener("click", () => toggleFullscreen(screenMap
 })();
 
 // ============================================================
+// РЕЖИМ ВІДОБРАЖЕННЯ (ТЕЛЕФОН / ПК)
+// ============================================================
+function detectDefaultUiMode() {
+  try {
+    if (window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 900) return "phone";
+    return "pc";
+  } catch { return "phone"; }
+}
+
+function applyUiMode(mode) {
+  if (mode !== "pc" && mode !== "phone") mode = detectDefaultUiMode();
+  document.body.classList.toggle("mode-pc", mode === "pc");
+  document.body.classList.toggle("mode-phone", mode === "phone");
+  const btn = $("topbarMode");
+  if (btn) {
+    if (mode === "pc") {
+      btn.textContent = "🖥";
+      btn.title = "Режим ПК (натисніть для телефону)";
+    } else {
+      btn.textContent = "📱";
+      btn.title = "Режим телефону (натисніть для ПК)";
+    }
+  }
+  try { localStorage.setItem(MODE_KEY, mode); } catch {}
+  setTimeout(() => {
+    if (pickerMap) pickerMap.invalidateSize();
+    if (reportMap) reportMap.invalidateSize();
+  }, 100);
+}
+
+function toggleUiMode() {
+  const cur = document.body.classList.contains("mode-pc") ? "pc" : "phone";
+  applyUiMode(cur === "pc" ? "phone" : "pc");
+}
+
+(function initUiMode() {
+  let saved = null;
+  try { saved = localStorage.getItem(MODE_KEY); } catch {}
+  applyUiMode(saved || detectDefaultUiMode());
+  const btn = $("topbarMode");
+  if (btn) btn.addEventListener("click", toggleUiMode);
+})();
+
+// ============================================================
 // СТАРТ
 // ============================================================
 renderHistory();
@@ -2396,8 +2515,10 @@ updateDateChips();
 (function readUrlParams() {
   const p = new URLSearchParams(location.search);
   const lat = parseFloat(p.get("lat")), lon = parseFloat(p.get("lon"));
+  const name = p.get("name") || null;
   if (!isNaN(lat) && !isNaN(lon)) {
     state.lat = lat; state.lon = lon;
+    if (name) addToHistory(lat, lon, name);
     goToSelect();
   }
 })();
