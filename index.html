@@ -33,10 +33,28 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   border-bottom:1px solid var(--border);padding:12px var(--pad);
   padding-top:calc(12px + env(safe-area-inset-top));
   display:flex;align-items:center;gap:12px;min-height:52px}
-#topbarTitle{font-weight:700;font-size:17px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#topbarBack{background:none;border:none;color:var(--text);font-size:22px;
-  padding:4px 8px;cursor:pointer;border-radius:8px}
-#topbarBack:hover{background:var(--bg3)}
+#topbarTitle{font-weight:700;font-size:17px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:8px}
+
+/* Стилі для помітної кнопки "Назад" */
+#topbarBack{
+  background:rgba(88, 166, 255, 0.15);
+  border:1px solid var(--blue);
+  color:var(--blue);
+  font-size:16px;
+  font-weight:600;
+  padding:6px 12px;
+  cursor:pointer;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  transition:all .15s;
+}
+#topbarBack:hover{
+  background:rgba(88, 166, 255, 0.3);
+  color:#fff;
+}
+
 #topbarMode{background:none;border:none;color:var(--text);font-size:20px;
   padding:4px 8px;cursor:pointer;border-radius:8px;line-height:1;
   display:flex;align-items:center;justify-content:center;min-width:36px;height:36px}
@@ -132,6 +150,7 @@ details .content{padding:12px 16px 16px}
   .weather-grid{font-size:13px}
 }
 #screen-map{position:relative;height:calc(100vh - 52px - env(safe-area-inset-top));
+  height:calc(100dvh - 52px - env(safe-area-inset-top));
   overflow:hidden;padding:0}
 #pickerMap{position:absolute;inset:0;width:100%;height:100%;z-index:1;background:#1a1f26}
 .map-crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -145,10 +164,10 @@ details .content{padding:12px 16px 16px}
 .map-btn:active{background:var(--accent)}
 .map-btn.active{background:var(--accent);border-color:var(--accent)}
 
-/* ===== ЗМЕНШЕНА ПАНЕЛЬ КЕРУВАННЯ ===== */
 .map-controls-bottom{position:absolute;bottom:0;left:0;right:0;z-index:1000;
   background:linear-gradient(to top, rgba(13,17,23,.98) 60%, rgba(13,17,23,0));
-  padding:15px var(--pad) calc(12px + env(safe-area-inset-bottom)); pointer-events: auto;}
+  padding:15px var(--pad) calc(24px + env(safe-area-inset-bottom)); pointer-events: auto;
+  max-height: 85vh; overflow-y: auto;}
 .map-coord-display{text-align:center;color:var(--text);
   font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-bottom:6px;
   text-shadow:0 0 6px rgba(0,0,0,.9)}
@@ -159,7 +178,6 @@ details .content{padding:12px 16px 16px}
 .map-legend .line{display:inline-block;width:18px;height:4px;border-radius:2px;
   margin-right:4px;vertical-align:middle}
 
-/* ===== КАРТА У ЗВІТІ ===== */
 .report-map-wrap { 
   position: relative; 
   height: 300px; 
@@ -207,7 +225,6 @@ details .content{padding:12px 16px 16px}
 .wind-label div, .dist-label div { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
 .dist-label div{ pointer-events:none; }
 
-/* ===== ЗМЕНШЕНИЙ БЛОК МАЛЮВАННЯ ===== */
 .draw-overlay { 
   position: relative;
   background: rgba(13,17,23,.85);
@@ -232,7 +249,6 @@ details .content{padding:12px 16px 16px}
 .draw-btn.danger{background:#da3633;border-color:#da3633;color:white}
 .draw-btn.danger:hover{background:#f85149}
 
-/* Зменшуємо кнопки в селекторі карти */
 .map-controls-bottom .btn {
   padding: 10px;
   font-size: 13.5px;
@@ -244,7 +260,6 @@ details .content{padding:12px 16px 16px}
   margin-bottom: 6px;
 }
 
-/* Fullscreen */
 :fullscreen{background:#000}
 :-webkit-full-screen{background:#000}
 #screen-map:fullscreen,
@@ -264,7 +279,6 @@ details .content{padding:12px 16px 16px}
   background:rgba(13,17,23,.7)!important;color:var(--text2)!important;font-size:10px!important}
 .leaflet-control-attribution a{color:var(--blue)!important}
 
-/* ===== ПК-режим ===== */
 @media (min-width: 768px) {
   body.mode-pc main { max-width: 1200px; }
   body.mode-pc #screen-input { max-width: 640px; margin: 0 auto; }
@@ -292,9 +306,9 @@ details .content{padding:12px 16px 16px}
 <body>
 
 <header id="topbar">
-  <div id="topbarTitle">🎣 Кльов — прогноз</div>
+  <div id="topbarTitle">🎣 Кльов — прогноз <span style="font-size:12px; color:var(--text2); font-weight:400; margin-left:4px;">v1.0</span></div>
   <button id="topbarMode" aria-label="Змінити режим" title="Режим ПК / телефон">📱</button>
-  <button id="topbarBack" class="hidden" aria-label="Назад">←</button>
+  <button id="topbarBack" class="hidden" aria-label="Назад">← Назад</button>
 </header>
 
 <main id="app">
@@ -331,7 +345,7 @@ details .content{padding:12px 16px 16px}
     </button>
     
     <div style="text-align:center; color:var(--text2); font-size:12px; margin-top:24px; margin-bottom:10px;">
-      Кльов v2.9 (Компактні кнопки)
+      Кльов v1.0
     </div>
   </section>
 
@@ -390,7 +404,6 @@ details .content{padding:12px 16px 16px}
     
     <div class="map-controls-bottom" id="pickerControlsBottom">
       
-      <!-- Блок малювання -->
       <div id="drawOverlay" class="draw-overlay hidden">
         <div class="draw-hint">
           ✏️ Тапайте по берегу, щоб обвести контур. Точок: <strong id="drawCount">0</strong>
@@ -414,9 +427,6 @@ details .content{padding:12px 16px 16px}
 <script>
 "use strict";
 
-// ============================================================
-// КОНСТАНТИ
-// ============================================================
 const HPA_TO_MMHG = 0.750062;
 const KMH_TO_MS = 3.6;
 const SECONDS_PER_DAY = 86400;
@@ -485,9 +495,6 @@ const CUSTOM_POLYGON_KEY = "carp_custom_polygons_v1";
 const HISTORY_KEY = "carp_history_v2";
 const MODE_KEY = "carp_ui_mode_v1";
 
-// ============================================================
-// УТИЛІТИ
-// ============================================================
 const pad2 = n => String(n).padStart(2, "0");
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 function clampScore(s, max=100) { return clamp(Math.floor(s), 0, max); }
@@ -521,27 +528,17 @@ function calculateNormPressure(elev) {
   return Math.round((NORM_PRESSURE_SEA_LEVEL - elev/NORM_PRESSURE_GRADIENT_M)*10)/10;
 }
 function escapeHtml(value) {
-  const entities = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  };
+  const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
   return String(value ?? "").replace(/[&<>"']/g, ch => entities[ch]);
 }
 
-// ============================================================
-// ГЕОМЕТРІЯ
-// ============================================================
 function pointInPolygon(lat, lon, poly) {
   let inside = false;
   const n = poly.length;
   for (let i = 0, j = n - 1; i < n; j = i++) {
     const yi = poly[i][0], xi = poly[i][1];
     const yj = poly[j][0], xj = poly[j][1];
-    const intersect = ((yi > lat) !== (yj > lat)) &&
-                      (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+    const intersect = ((yi > lat) !== (yj > lat)) && (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi);
     if (intersect) inside = !inside;
   }
   return inside;
@@ -576,26 +573,21 @@ function polygonAreaM2(poly) {
   for (let i = 0; i < n; i++) {
     const [lat1, lon1] = poly[i];
     const [lat2, lon2] = poly[(i + 1) % n];
-    area += (lon2 - lon1) * Math.PI/180 *
-            (2 + Math.sin(lat1*Math.PI/180) + Math.sin(lat2*Math.PI/180));
+    area += (lon2 - lon1) * Math.PI/180 * (2 + Math.sin(lat1*Math.PI/180) + Math.sin(lat2*Math.PI/180));
   }
   return Math.abs(area) * R * R / 2;
 }
 function polygonPerimeterM(poly) {
   let len = 0;
   const n = poly.length;
-  for (let i = 0; i < n; i++) {
-    len += distanceM(poly[i], poly[(i + 1) % n]);
-  }
+  for (let i = 0; i < n; i++) len += distanceM(poly[i], poly[(i + 1) % n]);
   return len;
 }
 function polygonShape(poly) {
   const lat0 = poly[0][0];
   const cosLat = Math.cos(lat0 * Math.PI / 180);
-  const M_PER_DEG_LAT = 111320;
-  const M_PER_DEG_LON = 111320 * cosLat;
-  const xs = poly.map(p => (p[1] - poly[0][1]) * M_PER_DEG_LON);
-  const ys = poly.map(p => (p[0] - poly[0][0]) * M_PER_DEG_LAT);
+  const xs = poly.map(p => (p[1] - poly[0][1]) * 111320 * cosLat);
+  const ys = poly.map(p => (p[0] - poly[0][0]) * 111320);
   const meanX = xs.reduce((a,b)=>a+b,0) / xs.length;
   const meanY = ys.reduce((a,b)=>a+b,0) / ys.length;
   let sxx = 0, syy = 0, sxy = 0;
@@ -611,8 +603,7 @@ function polygonShape(poly) {
   const l2 = Math.max(0.0001, tr/2 - disc);
   const elongation = Math.sqrt(l1 / l2);
   const angle = 0.5 * Math.atan2(2*sxy, sxx - syy) * 180 / Math.PI;
-  const compass = (90 - angle + 360) % 360;
-  return { elongation, orientation: compass };
+  return { elongation, orientation: (90 - angle + 360) % 360 };
 }
 function shorelineWindFactor(areaHa) {
   if (areaHa < 0.1) return 0.15;
@@ -622,10 +613,6 @@ function shorelineWindFactor(areaHa) {
   if (areaHa < 1000) return 1.2;
   return 1.4;
 }
-
-// ============================================================
-// МІСЯЦЬ
-// ============================================================
 function getMoonPhase(date) {
   const diffMs = date.getTime() - NEW_MOON_BASE_MS;
   const days = diffMs/1000/SECONDS_PER_DAY;
@@ -640,10 +627,6 @@ function getMoonPhase(date) {
   if (phase < 0.8125) return {name:"🌗 Остання чверть", icon:"🌗", carp:3, amur:3, crucian:5, tolstolob:3};
   return {name:"🌘 Спадаючий місяць", icon:"🌘", carp:3, amur:3, crucian:5, tolstolob:3};
 }
-
-// ============================================================
-// ТИСК
-// ============================================================
 function isPressureStableHigh(pHistory, idx, norm) {
   if (idx < PRESSURE_STABLE_HIGH_DAYS * HOURS_PER_DAY) return false;
   for (let d = 0; d < PRESSURE_STABLE_HIGH_DAYS; d++) {
@@ -669,10 +652,6 @@ function classifyPressure(pNow, delta, norm, pHistory, idx) {
   if (delta >= PRESSURE_MODERATE_FALL) return {enum:"MODERATE_FALL", label:"ПОМІРНЕ ПАДІННЯ ТИСКУ 🌧️", desc:"Тиск падає помірно. Риба активізується, але не на повну силу."};
   return {enum:"SHARP_FALL", label:"РІЗКЕ ПАДІННЯ ТИСКУ ⚠️🌪️", desc:"Різкий злам погоди/шторм. Риба в шоці і залягає на дно. Кльов мінімальний."};
 }
-
-// ============================================================
-// ВІТЕР
-// ============================================================
 function getSurfZone(degs) {
   if (degs == null || isNaN(degs)) return {from:"Невідомий", bank:"Невідомий"};
   if (degs >= 337.5 || degs < 22.5)   return {from:"Північний (↓)",          bank:"ПІВДЕННИЙ БЕРЕГ"};
@@ -695,10 +674,6 @@ function precipCategory(v) {
   if (v >= PRECIP_LIGHT_MIN) return "light";
   return "none";
 }
-
-// ============================================================
-// БАЛИ
-// ============================================================
 function scoreCarp(trend, wTemp, wSpeed, wFrom, precip, m, wf) {
   wf = wf == null ? 1.0 : wf;
   let s = BASE_SCORE_CARP;
@@ -747,7 +722,6 @@ function scoreTolstolob(trend, wTemp, m) {
   else if (trend === "SHARP_FALL" || trend === "SHARP_RISE") s -= 20;
   return clampScore(s + m);
 }
-
 function tempDeltaPredator(t, cmin, cmax, omin, omax, hotP, coldP) {
   if (!Number.isFinite(t)) return 0;
   if (t >= cmin && t <= cmax) return 25;
@@ -756,7 +730,6 @@ function tempDeltaPredator(t, cmin, cmax, omin, omax, hotP, coldP) {
   if (t > omax) return hotP;
   return coldP;
 }
-
 const PIKE_LIGHT = {twilight:25, dark:15, moonlit:10, overcast:10, bright:-10};
 const PERCH_LIGHT = {twilight:25, overcast:20, moonlit:5, dark:5, bright:-10};
 const ZANDER_LIGHT = {twilight:30, dark:20, moonlit:-10, overcast:10, bright:-20};
@@ -795,10 +768,6 @@ function scoreZander(trend, wTemp, wMs, precip, light, wf) {
   s += pressureDeltaPredator(trend) + ZANDER_LIGHT[light] + windDeltaPredator(wMs, wf) + precipDeltaPredator(precip);
   return clampScore(s);
 }
-
-// ============================================================
-// ЧАС ДОБИ / ОСВІТЛЕННЯ
-// ============================================================
 function timeOfDay(h) {
   if (h >= TOD_MORNING_START && h < TOD_DAY_START) return "morning";
   if (h >= TOD_DAY_START && h < TOD_EVENING_START) return "day";
@@ -811,19 +780,9 @@ function lightCondition(tod, cloud, moonName) {
   return moonName.includes("Повний") ? "moonlit" : "dark";
 }
 function lightLabel(l) {
-  return {twilight:"🌅 Сутінки (ідеально для хижаків!)",
-          overcast:"☁️ Хмарно — добре для полювання",
-          bright:"☀️ Яскраво — хижак обережний",
-          dark:"🌑 Темна ніч — судак/щука активні",
-          moonlit:"🌕 Місячна ніч — помірно"}[l];
+  return {twilight:"🌅 Сутінки (ідеально для хижаків!)", overcast:"☁️ Хмарно — добре для полювання", bright:"☀️ Яскраво — хижак обережний", dark:"🌑 Темна ніч — судак/щука активні", moonlit:"🌕 Місячна ніч — помірно"}[l];
 }
-function todLabel(t) {
-  return {morning:"🌅 Ранок", day:"☀️ День", evening:"🌆 Вечір", night:"🌙 Ніч"}[t];
-}
-
-// ============================================================
-// МІТКИ
-// ============================================================
+function todLabel(t) { return {morning:"🌅 Ранок", day:"☀️ День", evening:"🌆 Вечір", night:"🌙 Ніч"}[t]; }
 function carpLabel(s) {
   if (s <= 35) return {t:"ПАСИВНИЙ / СЛАБКИЙ КЛЬОВ 🛑", c:"red"};
   if (s <= 60) return {t:"НОРМА / ОДИНИЧНІ ПОКЛЬОВКИ 🟡", c:"yellow"};
@@ -855,9 +814,6 @@ function predatorLabel(s) {
   return {t:"ЖОР 🔥", c:"orange"};
 }
 
-// ============================================================
-// ВОДОЙМА
-// ============================================================
 function _waterCacheGet(lat, lon) {
   try {
     const all = JSON.parse(localStorage.getItem(WATER_CACHE_KEY) || "{}");
@@ -885,20 +841,16 @@ function _waterCacheSet(lat, lon, data) {
     localStorage.setItem(WATER_CACHE_KEY, JSON.stringify(all));
   } catch {}
 }
-
 function _customPolygonGet(lat, lon) {
   try {
     const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
-    const key4 = `${lat.toFixed(4)},${lon.toFixed(4)}`;
-    const key3 = `${lat.toFixed(3)},${lon.toFixed(3)}`;
-    return all[key4] || all[key3] || null;
+    return all[`${lat.toFixed(4)},${lon.toFixed(4)}`] || all[`${lat.toFixed(3)},${lon.toFixed(3)}`] || null;
   } catch { return null; }
 }
 function _customPolygonSet(lat, lon, coords) {
   try {
     const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
-    const key = `${lat.toFixed(4)},${lon.toFixed(4)}`;
-    all[key] = coords;
+    all[`${lat.toFixed(4)},${lon.toFixed(4)}`] = coords;
     localStorage.setItem(CUSTOM_POLYGON_KEY, JSON.stringify(all));
     return true;
   } catch { return false; }
@@ -906,14 +858,11 @@ function _customPolygonSet(lat, lon, coords) {
 function _customPolygonDelete(lat, lon) {
   try {
     const all = JSON.parse(localStorage.getItem(CUSTOM_POLYGON_KEY) || "{}");
-    const key4 = `${lat.toFixed(4)},${lon.toFixed(4)}`;
-    const key3 = `${lat.toFixed(3)},${lon.toFixed(3)}`;
-    delete all[key4];
-    delete all[key3];
+    delete all[`${lat.toFixed(4)},${lon.toFixed(4)}`];
+    delete all[`${lat.toFixed(3)},${lon.toFixed(3)}`];
     localStorage.setItem(CUSTOM_POLYGON_KEY, JSON.stringify(all));
   } catch {}
 }
-
 function _bufferLine(coords, widthM) {
   if (!coords || coords.length < 2) return [];
   const halfW = widthM / 2;
@@ -923,106 +872,66 @@ function _bufferLine(coords, widthM) {
     const prev = coords[Math.max(0, i - 1)];
     const next = coords[Math.min(coords.length - 1, i + 1)];
     const bearing = bearingDeg(prev, next);
-    const leftPt = destination(coords[i], (bearing + 270) % 360, halfW);
-    const rightPt = destination(coords[i], (bearing + 90) % 360, halfW);
-    left.push(leftPt);
-    right.push(rightPt);
+    left.push(destination(coords[i], (bearing + 270) % 360, halfW));
+    right.push(destination(coords[i], (bearing + 90) % 360, halfW));
   }
   return left.concat(right.reverse());
 }
-
 function _extractPolygons(data) {
   if (!data || !data.elements) return [];
-
   const ways = [];
   for (const el of data.elements) {
     if (el.type === "way" && el.geometry && el.geometry.length >= 2) {
-      const coords = el.geometry.map(g => [g.lat, g.lon]);
-      ways.push({ coords, tags: el.tags || {}, id: `way/${el.id}` });
+      ways.push({ coords: el.geometry.map(g => [g.lat, g.lon]), tags: el.tags || {}, id: `way/${el.id}` });
     } else if (el.type === "relation" && el.members) {
       for (const m of el.members) {
         if (m.type === "way" && m.role === "outer" && m.geometry && m.geometry.length >= 2) {
-          const coords = m.geometry.map(g => [g.lat, g.lon]);
-          ways.push({ coords, tags: el.tags || {}, id: `relation/${el.id}` });
+          ways.push({ coords: m.geometry.map(g => [g.lat, g.lon]), tags: el.tags || {}, id: `relation/${el.id}` });
         }
       }
     }
   }
-
   const processed = [];
   for (const w of ways) {
-    const first = w.coords[0];
-    const last = w.coords[w.coords.length - 1];
-    const isClosed = distanceM(first, last) < 30;
-
-    if (isClosed) {
-      processed.push(w);
-    } else {
+    const isClosed = distanceM(w.coords[0], w.coords[w.coords.length - 1]) < 30;
+    if (isClosed) processed.push(w);
+    else {
       const buffered = _bufferLine(w.coords, 25);
-      if (buffered.length >= 4) {
-        processed.push({ coords: buffered, tags: w.tags, id: w.id + "/buffered", buffered: true });
-      }
+      if (buffered.length >= 4) processed.push({ coords: buffered, tags: w.tags, id: w.id + "/buffered", buffered: true });
     }
   }
-
-  const MERGE_THRESHOLD_M = 25;
   const used = new Array(processed.length).fill(false);
   const result = [];
-
   for (let i = 0; i < processed.length; i++) {
     if (used[i]) continue;
     used[i] = true;
     const chain = processed[i].coords.slice();
     const tags = processed[i].tags;
     const id = processed[i].id;
-
     let extended = true;
     while (extended) {
       extended = false;
       for (let j = 0; j < processed.length; j++) {
         if (used[j]) continue;
         const w = processed[j].coords;
-        const head = chain[0];
-        const tail = chain[chain.length - 1];
-        const wStart = w[0];
-        const wEnd = w[w.length - 1];
-
-        if (distanceM(tail, wStart) < MERGE_THRESHOLD_M) {
-          chain.push(...w.slice(1));
-          used[j] = true; extended = true;
-        } else if (distanceM(tail, wEnd) < MERGE_THRESHOLD_M) {
-          chain.push(...w.slice(0, -1).reverse());
-          used[j] = true; extended = true;
-        } else if (distanceM(head, wEnd) < MERGE_THRESHOLD_M) {
-          chain.unshift(...w.slice(0, -1));
-          used[j] = true; extended = true;
-        } else if (distanceM(head, wStart) < MERGE_THRESHOLD_M) {
-          chain.unshift(...w.slice(1).reverse());
-          used[j] = true; extended = true;
-        }
+        const head = chain[0], tail = chain[chain.length - 1];
+        const wStart = w[0], wEnd = w[w.length - 1];
+        if (distanceM(tail, wStart) < 25) { chain.push(...w.slice(1)); used[j] = true; extended = true; }
+        else if (distanceM(tail, wEnd) < 25) { chain.push(...w.slice(0, -1).reverse()); used[j] = true; extended = true; }
+        else if (distanceM(head, wEnd) < 25) { chain.unshift(...w.slice(0, -1)); used[j] = true; extended = true; }
+        else if (distanceM(head, wStart) < 25) { chain.unshift(...w.slice(1).reverse()); used[j] = true; extended = true; }
       }
     }
-
-    if (chain.length >= 4) {
-      result.push({ coords: chain, tags, id, merged: true });
-    }
+    if (chain.length >= 4) result.push({ coords: chain, tags, id, merged: true });
   }
-
   if (result.length === 0) {
-    for (const w of processed) {
-      if (w.coords.length >= 3) {
-        result.push({ coords: w.coords, tags: w.tags, id: w.id });
-      }
-    }
+    for (const w of processed) if (w.coords.length >= 3) result.push({ coords: w.coords, tags: w.tags, id: w.id });
   }
-
   return result;
 }
-
 async function fetchWaterBody(lat, lon) {
   const cached = _waterCacheGet(lat, lon);
   if (cached !== undefined) return cached;
-
   const query = `[out:json][timeout:10];
 (
   way(around:1500,${lat},${lon})["natural"="water"];
@@ -1030,74 +939,56 @@ async function fetchWaterBody(lat, lon) {
   relation(around:1500,${lat},${lon})["natural"="water"];
 );
 out geom;`;
-
   for (const mirror of OVERPASS_MIRRORS) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 6000);
       const resp = await fetch(mirror, {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        body: "data=" + encodeURIComponent(query),
-        signal: controller.signal
+        method: "POST", headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: "data=" + encodeURIComponent(query), signal: controller.signal
       });
       clearTimeout(timeout);
       if (!resp.ok) continue;
       const data = await resp.json();
       const polys = _extractPolygons(data);
       if (!polys.length) { _waterCacheSet(lat, lon, null); return null; }
-
       const containing = polys.find(p => pointInPolygon(lat, lon, p.coords));
       let best = containing;
-
       if (!best) {
         let minDist = Infinity;
         for (const p of polys) {
           const distToPoly = Math.min(...p.coords.map(c => distanceM([lat,lon], c)));
-          if (distToPoly < minDist) {
-            minDist = distToPoly;
-            best = p;
-          }
+          if (distToPoly < minDist) { minDist = distToPoly; best = p; }
         }
-        if (minDist > 300) {
-          best = null;
-        }
+        if (minDist > 300) best = null;
       }
-
       _waterCacheSet(lat, lon, best);
       return best;
     } catch (e) {}
   }
   return null;
 }
-
 function computeShoreline(poly, windDir, windSpeed, mode) {
   const n = poly.length;
   if (n < 3) return [];
-  const areaM2 = polygonAreaM2(poly);
-  const areaHa = areaM2 / 10000;
-  const strength = shorelineWindFactor(areaHa);
+  const strength = shorelineWindFactor(polygonAreaM2(poly) / 10000);
   const centroid = polygonCentroid(poly);
   const dists = poly.map(p => distanceM(p, centroid));
   const avgDist = dists.reduce((a,b)=>a+b,0)/n || 1;
   const leewardDir = (windDir + 180) % 360;
   const segments = [];
   for (let i = 0; i < n; i++) {
-    const p1 = poly[i];
-    const p2 = poly[(i + 1) % n];
+    const p1 = poly[i], p2 = poly[(i + 1) % n];
     const mid = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2];
     const segAngle = bearingDeg(centroid, mid);
     const diff = Math.abs(((segAngle - leewardDir + 540) % 360) - 180);
     const leewardCos = Math.cos(diff * Math.PI / 180);
     const step = Math.max(1, Math.floor(n / 30));
-    const iPrev = (i - step + n) % n;
-    const iNext = (i + step) % n;
-    const neighborAvg = (dists[iPrev] + dists[iNext]) / 2;
+    const neighborAvg = (dists[(i - step + n) % n] + dists[(i + step) % n]) / 2;
     const concavity = (dists[i] - neighborAvg) / Math.max(5, avgDist * 0.15);
     let score = 50;
     if (mode === "peaceful") {
-      score += leewardCos * 35 * strength;
-      score += -Math.max(-1.5, Math.min(1.5, concavity)) * 12;
+      score += leewardCos * 35 * strength - Math.max(-1.5, Math.min(1.5, concavity)) * 12;
     } else {
       if (windSpeed >= 2 && windSpeed <= 5) score += -leewardCos * 25 * strength;
       else if (windSpeed > 5) score += leewardCos * 15 * strength;
@@ -1110,79 +1001,49 @@ function computeShoreline(poly, windDir, windSpeed, mode) {
   for (let k = 0; k < 3 && k < sorted.length; k++) sorted[k].isBest = true;
   return segments;
 }
-function shoreColor(score) {
-  if (score >= 65) return "#3fb950";
-  if (score >= 45) return "#d29922";
-  return "#f85149";
-}
+function shoreColor(score) { return score >= 65 ? "#3fb950" : (score >= 45 ? "#d29922" : "#f85149"); }
 function drawScoredShoreline(map, poly, segments) {
   const group = L.layerGroup();
   for (const seg of segments) {
-    const c = shoreColor(seg.score);
-    const weight = seg.isBest ? 6 : 3;
-    const opacity = seg.isBest ? 1.0 : 0.8;
-    L.polyline(seg.coords, {
-      color: c, weight, opacity,
-      lineCap: "round", lineJoin: "round"
-    }).addTo(group);
+    L.polyline(seg.coords, { color: shoreColor(seg.score), weight: seg.isBest ? 6 : 3, opacity: seg.isBest ? 1.0 : 0.8, lineCap: "round", lineJoin: "round" }).addTo(group);
   }
   group.addTo(map);
   return group;
 }
 function computeWbMod(waterBody) {
-  if (!waterBody || !waterBody.coords) {
-    return { windFactor: 1.0, areaHa: null, perimeterM: null, shape: null, name: null };
-  }
-  const areaM2 = polygonAreaM2(waterBody.coords);
-  const areaHa = areaM2 / 10000;
-  const perimeterM = polygonPerimeterM(waterBody.coords);
-  const shape = polygonShape(waterBody.coords);
+  if (!waterBody || !waterBody.coords) return { windFactor: 1.0, areaHa: null, perimeterM: null, shape: null, name: null };
+  const areaHa = polygonAreaM2(waterBody.coords) / 10000;
   let windFactor = 1.0;
   if (areaHa < 0.5) windFactor = 0.5;
   else if (areaHa < 2) windFactor = 0.7;
   else if (areaHa < 10) windFactor = 1.0;
   else if (areaHa < 100) windFactor = 1.2;
   else windFactor = 1.4;
-  const name = (waterBody.tags && waterBody.tags.name) || null;
-  return { windFactor, areaHa, perimeterM, shape, name };
+  return { windFactor, areaHa, perimeterM: polygonPerimeterM(waterBody.coords), shape: polygonShape(waterBody.coords), name: (waterBody.tags && waterBody.tags.name) || null };
 }
-
-// ============================================================
-// ЗАВАНТАЖЕННЯ ПОГОДИ
-// ============================================================
 async function fetchWeather(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
-    + `&hourly=temperature_2m,relative_humidity_2m,precipitation,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m`
-    + `&timezone=auto&forecast_days=${FORECAST_DAYS}&past_days=${PAST_DAYS}`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,precipitation,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&timezone=auto&forecast_days=${FORECAST_DAYS}&past_days=${PAST_DAYS}`;
   let response;
-  try { response = await fetch(url); }
-  catch (e) { throw new Error("Не вдалося з'єднатися з Open-Meteo. Перевірте інтернет."); }
+  try { response = await fetch(url); } catch (e) { throw new Error("Не вдалося з'єднатися з Open-Meteo. Перевірте інтернет."); }
   if (response.status === 429) throw new Error("Погодний сервіс обмежив запити (429). Спробуйте за 1–2 хвилини.");
   if (!response.ok) throw new Error(`Помилка сервера погоди (${response.status}).`);
   const data = await response.json();
-  if (!data.hourly || !Array.isArray(data.hourly.time) || data.hourly.time.length === 0) {
-    throw new Error("Погодний сервіс повернув порожні дані. Спробуйте пізніше.");
-  }
+  if (!data.hourly || !Array.isArray(data.hourly.time) || data.hourly.time.length === 0) throw new Error("Погодний сервіс повернув порожні дані. Спробуйте пізніше.");
   return data;
 }
 function buildSnapshot(weatherData, targetDate) {
   const hourly = weatherData.hourly;
   const times = hourly.time;
   const tzOffsetSec = weatherData.utc_offset_seconds || 0;
-  const locTarget = new Date(targetDate.getTime() + tzOffsetSec * 1000);
-  const targetStr = isoHour(locTarget);
-  
+  const targetStr = isoHour(new Date(targetDate.getTime() + tzOffsetSec * 1000));
   const idx = times.indexOf(targetStr);
-  if (idx < 0) {
-    throw new Error(`Немає погодинного прогнозу на ${targetStr}. Оберіть іншу дату або спробуйте пізніше.`);
-  }
-
+  if (idx < 0) throw new Error(`Немає погодинного прогнозу на ${targetStr}. Оберіть іншу дату.`);
+  
   const pHistory = hourly.surface_pressure || [];
   const pNow = safeVal(pHistory, idx) * HPA_TO_MMHG;
   let p24hAgo = safeVal(pHistory, idx - HOURS_PER_DAY, pNow) * HPA_TO_MMHG;
   if (idx < HOURS_PER_DAY) p24hAgo = pNow;
   const elevation = weatherData.elevation || 0;
-  const norm = calculateNormPressure(elevation);
   const tNow = safeVal(hourly.temperature_2m, idx);
   const startIdx = Math.max(0, idx - HOURS_PER_DAY);
   const tempsWindow = (hourly.temperature_2m || []).slice(startIdx, idx).filter(v => v != null);
@@ -1195,24 +1056,14 @@ function buildSnapshot(weatherData, targetDate) {
   const windDir = safeVal(hourly.wind_direction_10m, idx);
   const {from: windFrom, bank: surfBank} = getSurfZone(windDir);
   const windKmh = safeVal(hourly.wind_speed_10m, idx);
-  const nowLoc = locationNow(tzOffsetSec);
-  const nowStr = isoHour(nowLoc);
-  const nowIdx = times.indexOf(nowStr);
   return {
-    elevation, targetIndex: idx, tzOffsetSec, nowIdx,
-    pNow, p24hDelta: pNow - p24hAgo, pressureNorm: norm,
-    tNow, waterTemp,
-    windSpeedMs: windKmh / KMH_TO_MS, windDirDeg: windDir,
-    precipNow: safeVal(hourly.precipitation, idx),
-    cloudNow: safeVal(hourly.cloud_cover, idx),
-    windFrom, surfBank,
-    pHistory, hourly, times
+    elevation, targetIndex: idx, tzOffsetSec, nowIdx: times.indexOf(isoHour(locationNow(tzOffsetSec))),
+    pNow, p24hDelta: pNow - p24hAgo, pressureNorm: calculateNormPressure(elevation),
+    tNow, waterTemp, windSpeedMs: windKmh / KMH_TO_MS, windDirDeg: windDir,
+    precipNow: safeVal(hourly.precipitation, idx), cloudNow: safeVal(hourly.cloud_cover, idx),
+    windFrom, surfBank, pHistory, hourly, times
   };
 }
-
-// ============================================================
-// ЗВІТИ
-// ============================================================
 function generatePeacefulReport(snap, targetDate, wbMod) {
   const wf = wbMod ? wbMod.windFactor : 1.0;
   const trend = classifyPressure(snap.pNow, snap.p24hDelta, snap.pressureNorm, snap.pHistory, snap.targetIndex);
@@ -1231,32 +1082,22 @@ function generatePredatorReport(snap, targetDate, wbMod) {
   const wf = wbMod ? wbMod.windFactor : 1.0;
   const trend = classifyPressure(snap.pNow, snap.p24hDelta, snap.pressureNorm, snap.pHistory, snap.targetIndex);
   const moon = getMoonPhase(targetDate);
-  const tod = timeOfDay(targetDate.getHours());
-  const light = lightCondition(tod, snap.cloudNow, moon.name);
+  const light = lightCondition(timeOfDay(targetDate.getHours()), snap.cloudNow, moon.name);
   const precip = precipCategory(snap.precipNow);
   const pike = scorePike(trend.enum, snap.waterTemp, snap.windSpeedMs, precip, light, wf);
   const perch = scorePerch(trend.enum, snap.waterTemp, snap.windSpeedMs, precip, light, wf);
   const zander = scoreZander(trend.enum, snap.waterTemp, snap.windSpeedMs, precip, light, wf);
   return {
-    kind: "predator", trend, moonName: moon.name, tod, light, snap, targetDate, wbMod,
+    kind: "predator", trend, moonName: moon.name, tod: timeOfDay(targetDate.getHours()), light, snap, targetDate, wbMod,
     scores: {pike, perch, zander},
     labels: {pike: predatorLabel(pike), perch: predatorLabel(perch), zander: predatorLabel(zander)}
   };
 }
 
-// ============================================================
-// РЕНДЕР
-// ============================================================
 const COLORS = {red:"#f85149", yellow:"#d29922", green:"#3fb950", orange:"#f0883e", blue:"#58a6ff"};
-
 function renderScoreRow(label, score, labelObj) {
   const color = COLORS[labelObj.c] || COLORS.green;
-  return `<div class="score-row">
-    <div class="label">${label}</div>
-    <div class="bar"><div class="fill" style="width:${score}%;background:${color}"></div></div>
-    <div class="val" style="color:${color}">${score}%</div>
-  </div>
-  <div style="font-size:12.5px;color:var(--text2);margin:-4px 0 10px 0">${labelObj.t}</div>`;
+  return `<div class="score-row"><div class="label">${label}</div><div class="bar"><div class="fill" style="width:${score}%;background:${color}"></div></div><div class="val" style="color:${color}">${score}%</div></div><div style="font-size:12.5px;color:var(--text2);margin:-4px 0 10px 0">${labelObj.t}</div>`;
 }
 function renderWeatherGrid(snap, moonName) {
   return `<div class="weather-grid">
@@ -1269,58 +1110,23 @@ function renderWeatherGrid(snap, moonName) {
     <span class="k">☁️ Хмарність</span><span class="v">${Math.round(snap.cloudNow)} %</span>
     <span class="k">🌧 Опади</span><span class="v">${snap.precipNow.toFixed(2)} мм/год</span>
     <span class="k">🌙 Місяць</span><span class="v">${moonName}</span>
-  </div>
-  <div class="hint" style="margin-top:6px;">* Температура води розрахована за температурою повітря (може відрізнятися від реальної).</div>`;
+  </div><div class="hint" style="margin-top:6px;">* Температура води розрахована за температурою повітря (може відрізнятися від реальної).</div>`;
 }
 function renderWaterBodyInfo(wbMod) {
   if (!wbMod || wbMod.areaHa == null) return "";
   const name = wbMod.name ? `<strong>${escapeHtml(wbMod.name)}</strong> · ` : "";
-  const area = wbMod.areaHa < 1
-    ? `${(wbMod.areaHa * 10000).toFixed(0)} м²`
-    : `${wbMod.areaHa.toFixed(1)} га`;
-  const perim = wbMod.perimeterM < 1000
-    ? `${wbMod.perimeterM.toFixed(0)} м`
-    : `${(wbMod.perimeterM / 1000).toFixed(2)} км`;
-  const elong = wbMod.shape ? wbMod.shape.elongation.toFixed(1) : "?";
-  const orient = wbMod.shape ? Math.round(wbMod.shape.orientation) : "?";
-  const shapeDesc = wbMod.shape
-    ? (wbMod.shape.elongation < 1.3 ? "округла"
-      : wbMod.shape.elongation < 2 ? "злегка витягнута"
-      : wbMod.shape.elongation < 3 ? "витягнута"
-      : "сильно витягнута")
-    : "";
-  return `<div class="info-box">
-    🌊 <strong>Водойма:</strong> ${name}${area}<br>
-    📏 Периметр: ${perim}<br>
-    📐 Форма: ${shapeDesc} (×${elong}), орієнтація ~${orient}°
-  </div>`;
+  const area = wbMod.areaHa < 1 ? `${(wbMod.areaHa * 10000).toFixed(0)} м²` : `${wbMod.areaHa.toFixed(1)} га`;
+  const perim = wbMod.perimeterM < 1000 ? `${wbMod.perimeterM.toFixed(0)} м` : `${(wbMod.perimeterM / 1000).toFixed(2)} км`;
+  const shapeDesc = wbMod.shape.elongation < 1.3 ? "округла" : (wbMod.shape.elongation < 2 ? "злегка витягнута" : (wbMod.shape.elongation < 3 ? "витягнута" : "сильно витягнута"));
+  return `<div class="info-box">🌊 <strong>Водойма:</strong> ${name}${area}<br>📏 Периметр: ${perim}<br>📐 Форма: ${shapeDesc} (×${wbMod.shape.elongation.toFixed(1)}), орієнтація ~${Math.round(wbMod.shape.orientation)}°</div>`;
 }
 function renderReportMapBlock(windFrom, windSpeedMs, isPredator, wbMod) {
-  const legendLeeward = isPredator
-    ? `<span><span class="line" style="background:#3fb950"></span>Підвітряний — спокійна вода</span>`
-    : `<span><span class="line" style="background:#3fb950"></span>Підвітряний — корм і кисень</span>`;
-  const legendWindward = isPredator
-    ? `<span><span class="line" style="background:#f85149"></span>Навітряний — «ряб», маскує</span>`
-    : `<span><span class="line" style="background:#f85149"></span>Навітряний — вас видно</span>`;
-  const legendYellow = `<span><span class="line" style="background:#d29922"></span>Нейтрально</span>`;
-  const legendBlue = `<span><span class="dot" style="background:#58a6ff"></span>Ви тут</span>`;
+  const legendLeeward = isPredator ? `<span><span class="line" style="background:#3fb950"></span>Підвітряний — спокійна вода</span>` : `<span><span class="line" style="background:#3fb950"></span>Підвітряний — корм і кисень</span>`;
+  const legendWindward = isPredator ? `<span><span class="line" style="background:#f85149"></span>Навітряний — «ряб», маскує</span>` : `<span><span class="line" style="background:#f85149"></span>Навітряний — вас видно</span>`;
   const hasWb = wbMod && wbMod.areaHa != null;
-  const custom = _customPolygonGet(state.lat, state.lon);
-  
-  let warningHtml = "";
-  if (!hasWb) {
-    warningHtml = `<div class="warn" style="margin-top:10px; font-size: 13px;">
-      ⚠️ Не вдалося автоматично завантажити контур.<br>
-      <button class="btn secondary" style="margin-top:8px; padding: 10px; font-size: 14px;" onclick="showScreen('map')">✏️ Намалювати контур вручну</button>
-    </div>`;
-  }
-
-  const hint = isPredator
-    ? `💨 Хижаки: помірний «ряб» на навітряному березі. Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`
-    : `💨 Мирна риба: підвітряний берег (зелений). Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`;
-  const customHint = custom
-    ? `<div class="hint" style="color:#ff9800">✏️ Використовується ваш намальований контур</div>`
-    : `<div class="hint">💡 Якщо контур невірний — поверніться і обведіть вручну на карті.</div>`;
+  const warningHtml = !hasWb ? `<div class="warn" style="margin-top:10px; font-size: 13px;">⚠️ Не вдалося автоматично завантажити контур.<br><button class="btn secondary" style="margin-top:8px; padding: 10px; font-size: 14px;" onclick="showScreen('map')">✏️ Намалювати контур вручну</button></div>` : "";
+  const hint = isPredator ? `💨 Хижаки: помірний «ряб» на навітряному березі. Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.` : `💨 Мирна риба: підвітряний берег (зелений). Вітер ${windSpeedMs.toFixed(1)} м/с з ${windFrom}.`;
+  const customHint = _customPolygonGet(state.lat, state.lon) ? `<div class="hint" style="color:#ff9800">✏️ Використовується ваш намальований контур</div>` : `<div class="hint">💡 Якщо контур невірний — поверніться і обведіть вручну на карті.</div>`;
   return `
     <div class="card wide">
       <h2>🗺 Рекомендований берег</h2>
@@ -1332,7 +1138,7 @@ function renderReportMapBlock(windFrom, windSpeedMs, isPredator, wbMod) {
           <button class="report-map-btn" id="btnReportLayer" title="Шар" aria-label="Шар карти">🛰</button>
         </div>
       </div>
-      <div class="map-legend">${legendBlue}${legendLeeward}${legendYellow}${legendWindward}</div>
+      <div class="map-legend"><span><span class="dot" style="background:#58a6ff"></span>Ви тут</span>${legendLeeward}<span><span class="line" style="background:#d29922"></span>Нейтрально</span>${legendWindward}</div>
       <div class="hint">${hasWb ? "🎯 жовта мітка — рекомендоване місце" : "Контур водойми не знайдено"}</div>
       <div class="hint">${hint}</div>
       ${customHint}
@@ -1343,88 +1149,32 @@ function renderPeacefulReport(report) {
   const {scores, labels, snap, trend, moonName, targetDate, wbMod} = report;
   const dateStr = `${targetDate.getFullYear()}-${pad2(targetDate.getMonth()+1)}-${pad2(targetDate.getDate())} ${pad2(targetDate.getHours())}:00`;
   return `
-    <div class="card">
-      <h2>📊 Активність</h2>
-      ${renderScoreRow("🐟 Короп", scores.carp, labels.carp)}
-      ${renderScoreRow("🐡 Карась", scores.crucian, labels.crucian)}
-      ${renderScoreRow("🐠 Білий амур", scores.amur, labels.amur)}
-      ${renderScoreRow("🐟 Товстолоб", scores.tolstolob, labels.tolstolob)}
-    </div>
+    <div class="card"><h2>📊 Активність</h2>${renderScoreRow("🐟 Короп", scores.carp, labels.carp)}${renderScoreRow("🐡 Карась", scores.crucian, labels.crucian)}${renderScoreRow("🐠 Білий амур", scores.amur, labels.amur)}${renderScoreRow("🐟 Товстолоб", scores.tolstolob, labels.tolstolob)}</div>
     ${renderWaterBodyInfo(wbMod)}
-    <div class="card">
-      <h2>🌤 Погода · ${dateStr}</h2>
-      ${renderWeatherGrid(snap, moonName)}
-    </div>
-    <div class="card wide">
-      <h2>ℹ️ Тренд тиску</h2>
-      <div class="trend-box">
-        <div class="trend-title">${trend.label}</div>
-        <div class="trend-desc">${trend.desc}</div>
-      </div>
-    </div>
+    <div class="card"><h2>🌤 Погода · ${dateStr}</h2>${renderWeatherGrid(snap, moonName)}</div>
+    <div class="card wide"><h2>ℹ️ Тренд тиску</h2><div class="trend-box"><div class="trend-title">${trend.label}</div><div class="trend-desc">${trend.desc}</div></div></div>
     ${renderReportMapBlock(snap.windFrom, snap.windSpeedMs, false, wbMod)}
-    <div class="card wide">
-      <h2>📈 Активність мирних · 11 днів</h2>
-      <div class="chart-wrap tall"><canvas id="chart11"></canvas></div>
-      <div class="hint">Середнє за світловий день 05:00–21:00 · 🌑🌒🌓… під віссю — фаза місяця</div>
-    </div>
-    <div class="card wide">
-      <h2>📉 Тиск · 7 днів історії + прогноз</h2>
-      <div class="chart-wrap pressure"><canvas id="chartP"></canvas></div>
-      <div class="hint">Оранжева пунктирна — «зараз». Червона — обраний час лову.</div>
-    </div>`;
+    <div class="card wide"><h2>📈 Активність мирних · 11 днів</h2><div class="chart-wrap tall"><canvas id="chart11"></canvas></div><div class="hint">Середнє за світловий день 05:00–21:00 · 🌑🌒🌓… під віссю — фаза місяця</div></div>
+    <div class="card wide"><h2>📉 Тиск · 7 днів історії + прогноз</h2><div class="chart-wrap pressure"><canvas id="chartP"></canvas></div><div class="hint">Оранжева пунктирна — «зараз». Червона — обраний час лову.</div></div>`;
 }
 function renderPredatorReport(report) {
   const {scores, labels, snap, trend, moonName, targetDate, light, tod, wbMod} = report;
   const dateStr = `${targetDate.getFullYear()}-${pad2(targetDate.getMonth()+1)}-${pad2(targetDate.getDate())} ${pad2(targetDate.getHours())}:00`;
   return `
-    <div class="card">
-      <h2>📊 Активність хижаків</h2>
-      ${renderScoreRow("🦈 Щука", scores.pike, labels.pike)}
-      ${renderScoreRow("🐟 Окунь", scores.perch, labels.perch)}
-      ${renderScoreRow("🐡 Судак", scores.zander, labels.zander)}
-    </div>
-    <div class="card">
-      <h2>🌅 Умови освітлення</h2>
-      <div style="font-size:14px">${lightLabel(light)} · ${todLabel(tod)}</div>
-    </div>
+    <div class="card"><h2>📊 Активність хижаків</h2>${renderScoreRow("🦈 Щука", scores.pike, labels.pike)}${renderScoreRow("🐟 Окунь", scores.perch, labels.perch)}${renderScoreRow("🐡 Судак", scores.zander, labels.zander)}</div>
+    <div class="card"><h2>🌅 Умови освітлення</h2><div style="font-size:14px">${lightLabel(light)} · ${todLabel(tod)}</div></div>
     ${renderWaterBodyInfo(wbMod)}
-    <div class="card">
-      <h2>🌤 Погода · ${dateStr}</h2>
-      ${renderWeatherGrid(snap, moonName)}
-    </div>
-    <div class="card wide">
-      <h2>ℹ️ Тренд тиску</h2>
-      <div class="trend-box">
-        <div class="trend-title">${trend.label}</div>
-        <div class="trend-desc">${trend.desc}</div>
-      </div>
-    </div>
+    <div class="card"><h2>🌤 Погода · ${dateStr}</h2>${renderWeatherGrid(snap, moonName)}</div>
+    <div class="card wide"><h2>ℹ️ Тренд тиску</h2><div class="trend-box"><div class="trend-title">${trend.label}</div><div class="trend-desc">${trend.desc}</div></div></div>
     ${renderReportMapBlock(snap.windFrom, snap.windSpeedMs, true, wbMod)}
-    <div class="card wide">
-      <h2>📈 Активність хижаків · 24 години</h2>
-      <div class="chart-wrap tall"><canvas id="chart24"></canvas></div>
-      <div class="hint">Золоті вертикальні зони — світанок (05–07) та захід (18–20)</div>
-    </div>
-    <div class="card wide">
-      <h2>📉 Тиск · 7 днів історії + прогноз</h2>
-      <div class="chart-wrap pressure"><canvas id="chartP"></canvas></div>
-      <div class="hint">Оранжева пунктирна — «зараз». Червона — обраний час лову.</div>
-    </div>`;
+    <div class="card wide"><h2>📈 Активність хижаків · 24 години</h2><div class="chart-wrap tall"><canvas id="chart24"></canvas></div><div class="hint">Золоті вертикальні зони — світанок (05–07) та захід (18–20)</div></div>
+    <div class="card wide"><h2>📉 Тиск · 7 днів історії + прогноз</h2><div class="chart-wrap pressure"><canvas id="chartP"></canvas></div><div class="hint">Оранжева пунктирна — «зараз». Червона — обраний час лову.</div></div>`;
 }
 
-// ============================================================
-// ГРАФІКИ
-// ============================================================
 const _activeCharts = [];
-function destroyAllCharts() {
-  while (_activeCharts.length) {
-    const c = _activeCharts.pop();
-    try { c.destroy(); } catch (e) {}
-  }
-}
+function destroyAllCharts() { while (_activeCharts.length) { try { _activeCharts.pop().destroy(); } catch (e) {} } }
 function makeChart(canvas, config) {
-  if (typeof Chart === "undefined") { console.warn("Chart.js недоступний"); return null; }
+  if (typeof Chart === "undefined") return null;
   const existing = Chart.getChart(canvas);
   if (existing) existing.destroy();
   const c = new Chart(canvas, config);
@@ -1439,17 +1189,9 @@ const moonIconsPlugin = {
     const { ctx, chartArea, scales } = chart;
     const xScale = scales.x;
     if (!xScale) return;
-    ctx.save();
-    ctx.font = "14px serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.fillStyle = "#8b949e";
-    const icons = opts.icons;
-    for (let i = 0; i < icons.length; i++) {
-      try {
-        const x = xScale.getPixelForTick(i);
-        if (isFinite(x)) ctx.fillText(icons[i], x, chartArea.bottom + 6);
-      } catch (e) {}
+    ctx.save(); ctx.font = "14px serif"; ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillStyle = "#8b949e";
+    for (let i = 0; i < opts.icons.length; i++) {
+      try { const x = xScale.getPixelForTick(i); if (isFinite(x)) ctx.fillText(opts.icons[i], x, chartArea.bottom + 6); } catch (e) {}
     }
     ctx.restore();
   }
@@ -1458,16 +1200,12 @@ if (typeof Chart !== "undefined") Chart.register(moonIconsPlugin);
 const chartDefaults = {
   responsive: true, maintainAspectRatio: false,
   plugins: {legend: {labels: {color: "#e6edf3", font: {size: 11}, boxWidth: 12}}},
-  scales: {
-    x: {ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}},
-    y: {ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}}
-  }
+  scales: { x: {ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}}, y: {ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}} }
 };
 function drawPressureChart(canvasId, snap) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const times = snap.times;
-  const pHistory = snap.pHistory;
+  const times = snap.times, pHistory = snap.pHistory;
   const pMmhg = times.map((_, i) => safeVal(pHistory, i) * HPA_TO_MMHG);
   const labels = times.map(formatDayOnly);
   const norm = snap.pressureNorm;
@@ -1478,85 +1216,52 @@ function drawPressureChart(canvasId, snap) {
       const xScale = scales.x;
       if (!xScale) return;
       ctx.save();
-      if (snap.nowIdx != null && snap.nowIdx >= 0 && snap.nowIdx < times.length) {
+      if (snap.nowIdx >= 0 && snap.nowIdx < times.length) {
         const x = xScale.getPixelForValue(snap.nowIdx);
-        if (isFinite(x)) {
-          ctx.strokeStyle = "#f0883e";
-          ctx.setLineDash([4, 4]);
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.moveTo(x, chartArea.top);
-          ctx.lineTo(x, chartArea.bottom);
-          ctx.stroke();
-        }
+        if (isFinite(x)) { ctx.strokeStyle = "#f0883e"; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x, chartArea.top); ctx.lineTo(x, chartArea.bottom); ctx.stroke(); }
       }
-      if (snap.targetIndex != null && snap.targetIndex >= 0 && snap.targetIndex < times.length) {
+      if (snap.targetIndex >= 0 && snap.targetIndex < times.length) {
         const x = xScale.getPixelForValue(snap.targetIndex);
-        if (isFinite(x)) {
-          ctx.strokeStyle = "#f85149";
-          ctx.setLineDash([6, 3]);
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.moveTo(x, chartArea.top);
-          ctx.lineTo(x, chartArea.bottom);
-          ctx.stroke();
-        }
+        if (isFinite(x)) { ctx.strokeStyle = "#f85149"; ctx.setLineDash([6, 3]); ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x, chartArea.top); ctx.lineTo(x, chartArea.bottom); ctx.stroke(); }
       }
       ctx.restore();
     }
   };
   makeChart(canvas, {
     type: "line",
-    data: {
-      labels,
-      datasets: [
-        {label: "Тиск", data: pMmhg, borderColor: "#58a6ff", borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false},
-        {label: `Норма (${norm} мм)`, data: pMmhg.map(() => norm), borderColor: "#8b949e", borderDash: [4,4], borderWidth: 1, pointRadius: 0, fill: false}
-      ]
-    },
-    options: {
-      ...chartDefaults,
-      plugins: {legend: {labels: {color: "#e6edf3", font: {size: 10}, boxWidth: 10}}},
-      scales: {
-        x: {ticks: {color: "#8b949e", font: {size: 9}, maxTicksLimit: 6, autoSkip: true, maxRotation: 0}, grid: {color: "#30363d"}},
-        y: {ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}}
-      }
-    },
+    data: { labels, datasets: [
+      {label: "Тиск", data: pMmhg, borderColor: "#58a6ff", borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false},
+      {label: `Норма (${norm} мм)`, data: pMmhg.map(() => norm), borderColor: "#8b949e", borderDash: [4,4], borderWidth: 1, pointRadius: 0, fill: false}
+    ]},
+    options: { ...chartDefaults, plugins: {legend: {labels: {color: "#e6edf3", font: {size: 10}, boxWidth: 10}}}, scales: { x: {ticks: {color: "#8b949e", font: {size: 9}, maxTicksLimit: 6, autoSkip: true, maxRotation: 0}, grid: {color: "#30363d"}}, y: {ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}} } },
     plugins: [verticalLinesPlugin]
   });
 }
 function draw11DayChart(canvasId, weatherData) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const hourly = weatherData.hourly;
-  const times = hourly.time || [];
+  const hourly = weatherData.hourly, times = hourly.time || [];
   const norm = calculateNormPressure(weatherData.elevation || 0);
   const tzOffsetSec = weatherData.utc_offset_seconds || 0;
-  const locNow = locationNow(tzOffsetSec);
-  const todayIso = isoDateOnly(locNow);
-  const dayLabels = [], moonIcons = [];
-  const carpD = [], crucianD = [], amurD = [], tolstolobD = [];
+  const todayIso = isoDateOnly(locationNow(tzOffsetSec));
+  const dayLabels = [], moonIcons = [], carpD = [], crucianD = [], amurD = [], tolstolobD = [];
   for (let off = 0; off < ACTIVITY_FORECAST_DAYS; off++) {
     const dayIso = addDaysToIsoDate(todayIso, off);
-    const dayStr = dayIso + "T00:00";
-    const startIdx = times.indexOf(dayStr);
+    const startIdx = times.indexOf(dayIso + "T00:00");
     if (startIdx < 0) continue;
-    const dayAsDate = new Date(dayIso + "T12:00:00Z");
-    const moon = getMoonPhase(dayAsDate);
+    const moon = getMoonPhase(new Date(dayIso + "T12:00:00Z"));
     const carp = [], crucian = [], amur = [], tol = [];
     for (let h = 0; h < 24; h++) {
       const i = startIdx + h;
       if (i >= times.length) break;
       const pNow = safeVal(hourly.surface_pressure, i) * HPA_TO_MMHG;
-      const p24 = safeVal(hourly.surface_pressure, i - HOURS_PER_DAY, pNow) * HPA_TO_MMHG;
-      const trend = classifyPressure(pNow, pNow - p24, norm, hourly.surface_pressure, i);
+      const trend = classifyPressure(pNow, pNow - (safeVal(hourly.surface_pressure, i - HOURS_PER_DAY, pNow) * HPA_TO_MMHG), norm, hourly.surface_pressure, i);
       const tNow = safeVal(hourly.temperature_2m, i);
       const sI = Math.max(0, i - HOURS_PER_DAY);
       const tw = (hourly.temperature_2m || []).slice(sI, i).filter(v => v != null);
       const wTemp = tw.length ? (tw.reduce((a,b)=>a+b,0)/tw.length)*WATER_TEMP_LAG_FACTOR : tNow*WATER_TEMP_LAG_FACTOR;
-      const wDir = safeVal(hourly.wind_direction_10m, i);
-      const {from: wFrom} = getSurfZone(wDir);
       const wMs = safeVal(hourly.wind_speed_10m, i) / KMH_TO_MS;
+      const {from: wFrom} = getSurfZone(safeVal(hourly.wind_direction_10m, i));
       const precip = precipCategory(safeVal(hourly.precipitation, i));
       carp.push(scoreCarp(trend.enum, wTemp, wMs, wFrom, precip, moon.carp));
       crucian.push(scoreCrucian(trend.enum, wTemp, wMs, wFrom, precip, moon.crucian));
@@ -1566,55 +1271,28 @@ function draw11DayChart(canvasId, weatherData) {
     const slice = arr => arr.slice(DAYLIGHT_START_HOUR, DAYLIGHT_END_HOUR);
     const avg = arr => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : 0;
     const [y, m, d] = dayIso.split("-");
-    dayLabels.push(`${d}.${m}`);
-    moonIcons.push(moon.icon);
-    carpD.push(avg(slice(carp)));
-    crucianD.push(avg(slice(crucian)));
-    amurD.push(avg(slice(amur)));
-    tolstolobD.push(avg(slice(tol)));
+    dayLabels.push(`${d}.${m}`); moonIcons.push(moon.icon);
+    carpD.push(avg(slice(carp))); crucianD.push(avg(slice(crucian))); amurD.push(avg(slice(amur))); tolstolobD.push(avg(slice(tol)));
   }
   makeChart(canvas, {
     type: "line",
-    data: {
-      labels: dayLabels,
-      datasets: [
-        {label: "Короп", data: carpD, borderColor: "#f85149", tension: 0.3, borderWidth: 2.2, pointRadius: 3, pointBackgroundColor: "#f85149"},
-        {label: "Карась", data: crucianD, borderColor: "#d29922", tension: 0.3, borderWidth: 2.2, pointRadius: 3, pointBackgroundColor: "#d29922"},
-        {label: "Білий Амур", data: amurD, borderColor: "#3fb950", tension: 0.3, borderWidth: 2.2, borderDash: [4,3], pointRadius: 3, pointBackgroundColor: "#3fb950"},
-        {label: "Товстолоб", data: tolstolobD, borderColor: "#58a6ff", tension: 0.3, borderWidth: 2.2, borderDash: [1,3], pointRadius: 3, pointBackgroundColor: "#58a6ff"}
-      ]
-    },
-    options: {
-      ...chartDefaults,
-      layout: {padding: {bottom: 22}},
-      plugins: {
-        legend: {labels: {color: "#e6edf3", font: {size: 11}, boxWidth: 12}},
-        moonIcons: {icons: moonIcons}
-      },
-      scales: {
-        x: {ticks: {color: "#8b949e", font: {size: 10}, maxRotation: 0}, grid: {color: "#30363d"}},
-        y: {min: 0, max: 100, ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}}
-      }
-    }
+    data: { labels: dayLabels, datasets: [
+      {label: "Короп", data: carpD, borderColor: "#f85149", tension: 0.3, borderWidth: 2.2, pointRadius: 3, pointBackgroundColor: "#f85149"},
+      {label: "Карась", data: crucianD, borderColor: "#d29922", tension: 0.3, borderWidth: 2.2, pointRadius: 3, pointBackgroundColor: "#d29922"},
+      {label: "Білий Амур", data: amurD, borderColor: "#3fb950", tension: 0.3, borderWidth: 2.2, borderDash: [4,3], pointRadius: 3, pointBackgroundColor: "#3fb950"},
+      {label: "Товстолоб", data: tolstolobD, borderColor: "#58a6ff", tension: 0.3, borderWidth: 2.2, borderDash: [1,3], pointRadius: 3, pointBackgroundColor: "#58a6ff"}
+    ]},
+    options: { ...chartDefaults, layout: {padding: {bottom: 22}}, plugins: { legend: {labels: {color: "#e6edf3", font: {size: 11}, boxWidth: 12}}, moonIcons: {icons: moonIcons} }, scales: { x: {ticks: {color: "#8b949e", font: {size: 10}, maxRotation: 0}, grid: {color: "#30363d"}}, y: {min: 0, max: 100, ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}} } }
   });
 }
 function draw24hChart(canvasId, weatherData, targetDate) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const hourly = weatherData.hourly;
-  const times = hourly.time || [];
+  const hourly = weatherData.hourly, times = hourly.time || [];
   const tzOffsetSec = weatherData.utc_offset_seconds || 0;
-  const locTarget = new Date(targetDate.getTime() + tzOffsetSec * 1000);
-  const dayIso = isoDateOnly(locTarget);
-  const dayStr = dayIso + "T00:00";
-  let startIdx = times.indexOf(dayStr);
-  if (startIdx < 0) {
-    for (let h = 0; h < 24; h++) {
-      const testStr = `${dayIso}T${pad2(h)}:00`;
-      const idx = times.indexOf(testStr);
-      if (idx >= 0) { startIdx = idx - h; break; }
-    }
-  }
+  const dayIso = isoDateOnly(new Date(targetDate.getTime() + tzOffsetSec * 1000));
+  let startIdx = times.indexOf(dayIso + "T00:00");
+  if (startIdx < 0) for (let h = 0; h < 24; h++) { const idx = times.indexOf(`${dayIso}T${pad2(h)}:00`); if (idx >= 0) { startIdx = idx - h; break; } }
   if (startIdx < 0) return;
   const norm = calculateNormPressure(weatherData.elevation || 0);
   const moon = getMoonPhase(targetDate);
@@ -1623,8 +1301,7 @@ function draw24hChart(canvasId, weatherData, targetDate) {
     const i = startIdx + h;
     if (i < 0 || i >= times.length) break;
     const pNow = safeVal(hourly.surface_pressure, i) * HPA_TO_MMHG;
-    const p24 = safeVal(hourly.surface_pressure, i - HOURS_PER_DAY, pNow) * HPA_TO_MMHG;
-    const trend = classifyPressure(pNow, pNow - p24, norm, hourly.surface_pressure, i);
+    const trend = classifyPressure(pNow, pNow - (safeVal(hourly.surface_pressure, i - HOURS_PER_DAY, pNow) * HPA_TO_MMHG), norm, hourly.surface_pressure, i);
     const tNow = safeVal(hourly.temperature_2m, i);
     const sI = Math.max(0, i - HOURS_PER_DAY);
     const tw = (hourly.temperature_2m || []).slice(sI, i).filter(v => v != null);
@@ -1632,45 +1309,31 @@ function draw24hChart(canvasId, weatherData, targetDate) {
     const wMs = safeVal(hourly.wind_speed_10m, i) / KMH_TO_MS;
     const precip = precipCategory(safeVal(hourly.precipitation, i));
     const cloud = safeVal(hourly.cloud_cover, i);
-    const tod = timeOfDay(h);
-    const light = lightCondition(tod, cloud, moon.name);
+    const light = lightCondition(timeOfDay(h), cloud, moon.name);
     hours.push(`${pad2(h)}:00`);
     pike.push(scorePike(trend.enum, wTemp, wMs, precip, light));
     perch.push(scorePerch(trend.enum, wTemp, wMs, precip, light));
     zander.push(scoreZander(trend.enum, wTemp, wMs, precip, light));
   }
   const smooth = arr => {
-    const n = arr.length, half = 1, out = [];
+    const n = arr.length, out = [];
     for (let i = 0; i < n; i++) {
-      const lo = Math.max(0, i-half), hi = Math.min(n, i+half+1);
+      const lo = Math.max(0, i-1), hi = Math.min(n, i+2);
       out.push(arr.slice(lo, hi).reduce((a,b)=>a+b,0)/(hi-lo));
     }
     return out;
   };
   makeChart(canvas, {
     type: "line",
-    data: {
-      labels: hours,
-      datasets: [
-        {label: "Щука", data: smooth(pike), borderColor: "#58a6ff", tension: 0.3, borderWidth: 2.5, pointRadius: 2},
-        {label: "Окунь", data: smooth(perch), borderColor: "#f0883e", tension: 0.3, borderWidth: 2.2, pointRadius: 2},
-        {label: "Судак", data: smooth(zander), borderColor: "#bc8cff", tension: 0.3, borderWidth: 2, borderDash: [4,3], pointRadius: 2}
-      ]
-    },
-    options: {
-      ...chartDefaults,
-      plugins: {legend: {labels: {color: "#e6edf3", font: {size: 11}, boxWidth: 12}}},
-      scales: {
-        x: {ticks: {color: "#8b949e", font: {size: 9}, maxTicksLimit: 8, autoSkip: true, maxRotation: 0}, grid: {color: "#30363d"}},
-        y: {min: 0, max: 100, ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}}
-      }
-    }
+    data: { labels: hours, datasets: [
+      {label: "Щука", data: smooth(pike), borderColor: "#58a6ff", tension: 0.3, borderWidth: 2.5, pointRadius: 2},
+      {label: "Окунь", data: smooth(perch), borderColor: "#f0883e", tension: 0.3, borderWidth: 2.2, pointRadius: 2},
+      {label: "Судак", data: smooth(zander), borderColor: "#bc8cff", tension: 0.3, borderWidth: 2, borderDash: [4,3], pointRadius: 2}
+    ]},
+    options: { ...chartDefaults, plugins: {legend: {labels: {color: "#e6edf3", font: {size: 11}, boxWidth: 12}}}, scales: { x: {ticks: {color: "#8b949e", font: {size: 9}, maxTicksLimit: 8, autoSkip: true, maxRotation: 0}, grid: {color: "#30363d"}}, y: {min: 0, max: 100, ticks: {color: "#8b949e", font: {size: 10}}, grid: {color: "#30363d"}} } }
   });
 }
 
-// ============================================================
-// КАРТА
-// ============================================================
 let pickerMap = null;
 let reportMap = null;
 let currentLayerType = "satellite";
@@ -1678,24 +1341,9 @@ let pickerDepthEnabled = false;
 let reportDepthEnabled = true;
 
 const TILES = {
-  satellite: {
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    attribution: '© Esri, Maxar, Earthstar Geographics',
-    maxZoom: 19,
-    needsLabels: true
-  },
-  topo: {
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-    attribution: '© Esri, HERE, Garmin, FAO, NOAA, USGS',
-    maxZoom: 19,
-    needsLabels: false
-  },
-  osm: {
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-    attribution: '© Esri, HERE, Garmin, USGS, EPA',
-    maxZoom: 19,
-    needsLabels: false
-  }
+  satellite: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", attribution: '© Esri, Maxar, Earthstar Geographics', maxZoom: 19, needsLabels: true },
+  topo: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", attribution: '© Esri, HERE, Garmin, FAO, NOAA, USGS', maxZoom: 19, needsLabels: false },
+  osm: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", attribution: '© Esri, HERE, Garmin, USGS, EPA', maxZoom: 19, needsLabels: false }
 };
 const LAYER_ORDER = ["satellite", "topo", "osm"];
 const LAYER_ICONS = { satellite: "🛰", topo: "⛰", osm: "🗺" };
@@ -1705,35 +1353,16 @@ const ESRI_PLACES_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/Re
 const ESRI_ROADS_URL  = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}";
 const ESRI_REF_ATTR   = '© Esri Reference';
 
-// ============================================================
-// РЕЖИМ МАЛЮВАННЯ КОНТУРУ
-// ============================================================
-const _drawState = {
-  active: false,
-  points: [],
-  markers: [],
-  line: null,
-  map: null,
-  pendingLayer: null
-};
+const _drawState = { active: false, points: [], markers: [], line: null, map: null, pendingLayer: null };
 
 function _resetDrawingState() {
   if (_drawState.map) {
     try { _drawState.map.off("click", _onDrawClick); } catch (e) {}
-    if (_drawState.pendingLayer) {
-      _drawState.map.removeLayer(_drawState.pendingLayer);
-    }
+    if (_drawState.pendingLayer) _drawState.map.removeLayer(_drawState.pendingLayer);
   }
-  _drawState.active = false;
-  _drawState.points = [];
-  _drawState.markers = [];
-  _drawState.line = null;
-  _drawState.map = null;
-  _drawState.pendingLayer = null;
-  
+  _drawState.active = false; _drawState.points = []; _drawState.markers = []; _drawState.line = null; _drawState.map = null; _drawState.pendingLayer = null;
   const overlay = document.getElementById("drawOverlay");
   if (overlay) overlay.classList.add("hidden");
-  
   const btn = document.getElementById("btnPickerDraw");
   if (btn) btn.classList.remove("active");
 }
@@ -1742,25 +1371,10 @@ function _onDrawClick(e) {
   if (!_drawState.active) return;
   const pt = [e.latlng.lat, e.latlng.lng];
   _drawState.points.push(pt);
-
-  const m = L.circleMarker(pt, {
-    radius: 6,
-    fillColor: "#ff9800",
-    color: "#ffffff",
-    weight: 2,
-    fillOpacity: 1
-  }).addTo(_drawState.pendingLayer);
+  const m = L.circleMarker(pt, { radius: 6, fillColor: "#ff9800", color: "#ffffff", weight: 2, fillOpacity: 1 }).addTo(_drawState.pendingLayer);
   _drawState.markers.push(m);
-
   if (_drawState.line) _drawState.map.removeLayer(_drawState.line);
-  if (_drawState.points.length >= 2) {
-    _drawState.line = L.polyline(_drawState.points, {
-      color: "#ff9800",
-      weight: 3,
-      opacity: 0.95
-    }).addTo(_drawState.pendingLayer);
-  }
-
+  if (_drawState.points.length >= 2) _drawState.line = L.polyline(_drawState.points, { color: "#ff9800", weight: 3, opacity: 0.95 }).addTo(_drawState.pendingLayer);
   const cnt = document.getElementById("drawCount");
   if (cnt) cnt.textContent = _drawState.points.length;
 }
@@ -1771,40 +1385,23 @@ function _undoDrawPoint() {
   const m = _drawState.markers.pop();
   if (m) _drawState.map.removeLayer(m);
   if (_drawState.line) _drawState.map.removeLayer(_drawState.line);
-  if (_drawState.points.length >= 2) {
-    _drawState.line = L.polyline(_drawState.points, {
-      color: "#ff9800", weight: 3, opacity: 0.95
-    }).addTo(_drawState.pendingLayer);
-  } else {
-    _drawState.line = null;
-  }
+  if (_drawState.points.length >= 2) _drawState.line = L.polyline(_drawState.points, { color: "#ff9800", weight: 3, opacity: 0.95 }).addTo(_drawState.pendingLayer);
+  else _drawState.line = null;
   const cnt = document.getElementById("drawCount");
   if (cnt) cnt.textContent = _drawState.points.length;
 }
 
 function startDrawingMode(map) {
   if (!map) return;
-  
-  if (map._customPolygonLayer) {
-    map.removeLayer(map._customPolygonLayer);
-    map._customPolygonLayer = null;
-  }
-
-  _drawState.active = true;
-  _drawState.points = [];
-  _drawState.markers = [];
-  _drawState.line = null;
-  _drawState.map = map;
+  if (map._customPolygonLayer) { map.removeLayer(map._customPolygonLayer); map._customPolygonLayer = null; }
+  _drawState.active = true; _drawState.points = []; _drawState.markers = []; _drawState.line = null; _drawState.map = map;
   _drawState.pendingLayer = L.layerGroup().addTo(map);
-
   const overlay = document.getElementById("drawOverlay");
   if (overlay) overlay.classList.remove("hidden");
   const cnt = document.getElementById("drawCount");
   if (cnt) cnt.textContent = "0";
-
   const btn = document.getElementById("btnPickerDraw");
   if (btn) btn.classList.add("active");
-
   map.on("click", _onDrawClick);
   map.getContainer().style.cursor = "crosshair";
 }
@@ -1812,36 +1409,23 @@ function startDrawingMode(map) {
 function finishDrawingMode() {
   if (!_drawState.active) return;
   const pts = _drawState.points.slice();
-  if (pts.length < 3) {
-    alert("Потрібно мінімум 3 точки. Тапніть ще " + (3 - pts.length) + ".");
-    return;
-  }
-  
+  if (pts.length < 3) { alert("Потрібно мінімум 3 точки. Тапніть ще " + (3 - pts.length) + "."); return; }
   const center = _drawState.map.getCenter();
   _customPolygonSet(center.lat, center.lng, pts);
-  
   _resetDrawingState();
-  
   if (pickerMap) {
-    if (pickerMap._customPolygonLayer) {
-      pickerMap.removeLayer(pickerMap._customPolygonLayer);
-    }
-    pickerMap._customPolygonLayer = L.polygon(pts, {
-      color: "#ff9800", weight: 3, fillColor: "#ff9800", fillOpacity: 0.15
-    }).addTo(pickerMap);
+    if (pickerMap._customPolygonLayer) pickerMap.removeLayer(pickerMap._customPolygonLayer);
+    pickerMap._customPolygonLayer = L.polygon(pts, { color: "#ff9800", weight: 3, fillColor: "#ff9800", fillOpacity: 0.15 }).addTo(pickerMap);
     $("btnPickerDeleteCustom").style.display = "flex";
   }
 }
 
-function cancelDrawingMode() {
-  _resetDrawingState();
-}
+function cancelDrawingMode() { _resetDrawingState(); }
 
 function ensureLabelsPane(map) {
   if (!map.getPane("labelsPane")) map.createPane("labelsPane");
   const pane = map.getPane("labelsPane");
-  pane.style.zIndex = 460;
-  pane.style.pointerEvents = "none";
+  pane.style.zIndex = 460; pane.style.pointerEvents = "none";
 }
 function applyTile(map, type) {
   if (!map) return;
@@ -1849,11 +1433,7 @@ function applyTile(map, type) {
   if (map._labelsLayer) { map.removeLayer(map._labelsLayer); map._labelsLayer = null; }
   if (map._roadsLayer) { map.removeLayer(map._roadsLayer); map._roadsLayer = null; }
   const t = TILES[type] || TILES.satellite;
-  map._customTile = L.tileLayer(t.url, {
-    attribution: t.attribution,
-    maxZoom: t.maxZoom,
-    crossOrigin: true
-  }).addTo(map);
+  map._customTile = L.tileLayer(t.url, { attribution: t.attribution, maxZoom: t.maxZoom, crossOrigin: true }).addTo(map);
   if (t.needsLabels) {
     ensureLabelsPane(map);
     map._roadsLayer = L.tileLayer(ESRI_ROADS_URL, {attribution: ESRI_REF_ATTR, maxZoom: t.maxZoom, opacity: 0.85, pane: "labelsPane"}).addTo(map);
@@ -1874,18 +1454,14 @@ function reorderMapLayers(map) {
 function toggleDepthLayer(map, enabled) {
   if (!map) return;
   if (map._depthLayer) { map.removeLayer(map._depthLayer); map._depthLayer = null; }
-  if (enabled) {
-    map._depthLayer = L.tileLayer(DEPTH_TILE_URL, {attribution: '© OpenSeaMap Depth Data', maxZoom: 18, opacity: 0.75}).addTo(map);
-  }
+  if (enabled) map._depthLayer = L.tileLayer(DEPTH_TILE_URL, {attribution: '© OpenSeaMap Depth Data', maxZoom: 18, opacity: 0.75}).addTo(map);
   reorderMapLayers(map);
 }
 function destination(center, bearingDeg, distanceM) {
   const rad = bearingDeg * Math.PI / 180;
   const [lat0, lon0] = center;
   const cosLat = Math.cos(lat0 * Math.PI / 180);
-  const dLat = (distanceM * Math.cos(rad)) / 111320;
-  const dLon = (distanceM * Math.sin(rad)) / (111320 * cosLat);
-  return [lat0 + dLat, lon0 + dLon];
+  return [lat0 + (distanceM * Math.cos(rad)) / 111320, lon0 + (distanceM * Math.sin(rad)) / (111320 * cosLat)];
 }
 function sectorPoints(center, radiusM, dirStart, dirEnd, steps) {
   steps = steps || 48;
@@ -1895,9 +1471,7 @@ function sectorPoints(center, radiusM, dirStart, dirEnd, steps) {
   for (let i = 0; i <= steps; i++) {
     const d = dirStart + (dirEnd - dirStart) * i / steps;
     const rad = d * Math.PI / 180;
-    const dLat = (radiusM * Math.cos(rad)) / 111320;
-    const dLon = (radiusM * Math.sin(rad)) / (111320 * cosLat);
-    pts.push([lat0 + dLat, lon0 + dLon]);
+    pts.push([lat0 + (radiusM * Math.cos(rad)) / 111320, lon0 + (radiusM * Math.sin(rad)) / (111320 * cosLat)]);
   }
   return pts;
 }
@@ -1906,21 +1480,11 @@ function addWindOverlay(map, center, windDir, windSpeedMs, radiusM) {
   const r = radiusM || 150;
   const group = L.layerGroup().addTo(map);
   const leewardCenter = (windDir + 180) % 360;
-  L.polygon(sectorPoints(center, r, leewardCenter - 60, leewardCenter + 60),
-    { color: "#3fb950", fillColor: "#3fb950", fillOpacity: 0.32, weight: 1.5, opacity: 0.75 }).addTo(group);
-  L.polygon(sectorPoints(center, r, windDir - 60, windDir + 60),
-    { color: "#f85149", fillColor: "#f85149", fillOpacity: 0.18, weight: 1.5, opacity: 0.6, dashArray: "4,4" }).addTo(group);
-  const arrowTip = destination(center, leewardCenter, r * 1.05);
-  L.polyline([center, arrowTip], { color: "#58a6ff", weight: 4, opacity: 0.95 }).addTo(group);
+  L.polygon(sectorPoints(center, r, leewardCenter - 60, leewardCenter + 60), { color: "#3fb950", fillColor: "#3fb950", fillOpacity: 0.32, weight: 1.5, opacity: 0.75 }).addTo(group);
+  L.polygon(sectorPoints(center, r, windDir - 60, windDir + 60), { color: "#f85149", fillColor: "#f85149", fillOpacity: 0.18, weight: 1.5, opacity: 0.6, dashArray: "4,4" }).addTo(group);
+  L.polyline([center, destination(center, leewardCenter, r * 1.05)], { color: "#58a6ff", weight: 4, opacity: 0.95 }).addTo(group);
   L.circleMarker(center, { radius: 7, fillColor: "#58a6ff", color: "#ffffff", weight: 3, fillOpacity: 1 }).addTo(group);
-  const labelPt = destination(center, leewardCenter, r * 0.55);
-  L.marker(labelPt, {
-    icon: L.divIcon({
-      className: "wind-label",
-      html: `<div style="background:rgba(13,17,23,.92);color:#58a6ff;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid #30363d;">💨 ${windSpeedMs.toFixed(1)} м/с</div>`,
-      iconSize: [0, 0]
-    })
-  }).addTo(group);
+  L.marker(destination(center, leewardCenter, r * 0.55), { icon: L.divIcon({ className: "wind-label", html: `<div style="background:rgba(13,17,23,.92);color:#58a6ff;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid #30363d;">💨 ${windSpeedMs.toFixed(1)} м/с</div>`, iconSize: [0, 0] }) }).addTo(group);
   map._windGroup = group;
   reorderMapLayers(map);
   return group;
@@ -1931,72 +1495,44 @@ function addWaterBodyLayer(map, waterBody, segments, mode) {
   if (map._wbOutline) { map.removeLayer(map._wbOutline); map._wbOutline = null; }
   if (map._arrowGroup) { map.removeLayer(map._arrowGroup); map._arrowGroup = null; }
 
-  map._wbOutline = L.polygon(waterBody.coords, {
-    color: "#7ec8ff",
-    weight: 1.5,
-    opacity: 0.9,
-    fillColor: "#58a6ff",
-    fillOpacity: 0.12,
-    dashArray: null
-  }).addTo(map);
-
-  if (segments && segments.length) {
-    map._shoreGroup = drawScoredShoreline(map, waterBody.coords, segments);
-  }
-
+  map._wbOutline = L.polygon(waterBody.coords, { color: "#7ec8ff", weight: 1.5, opacity: 0.9, fillColor: "#58a6ff", fillOpacity: 0.12, dashArray: null }).addTo(map);
+  if (segments && segments.length) map._shoreGroup = drawScoredShoreline(map, waterBody.coords, segments);
+  
   const arrowGroup = L.layerGroup();
   if (segments && segments.length) {
     const bestSeg = segments.reduce((a, b) => (a.score > b.score ? a : b));
     const targetPt = bestSeg.mid;
-
-    L.circleMarker(targetPt, {
-      radius: 6, fillColor: "#ffd700", color: "#ffffff",
-      weight: 2, fillOpacity: 1
-    }).addTo(arrowGroup);
-
-    L.circleMarker(targetPt, {
-      radius: 11, fillColor: "#ffd700", color: "#ffd700",
-      weight: 1, fillOpacity: 0.2
-    }).addTo(arrowGroup);
+    L.circleMarker(targetPt, { radius: 6, fillColor: "#ffd700", color: "#ffffff", weight: 2, fillOpacity: 1 }).addTo(arrowGroup);
+    L.circleMarker(targetPt, { radius: 11, fillColor: "#ffd700", color: "#ffd700", weight: 1, fillOpacity: 0.2 }).addTo(arrowGroup);
   }
   arrowGroup.addTo(map);
   map._arrowGroup = arrowGroup;
-
   reorderMapLayers(map);
 }
 function toggleFullscreen(el) {
   if (!el) return;
-  const isFs = document.fullscreenElement || document.webkitFullscreenElement ||
-               document.mozFullScreenElement || document.msFullscreenElement;
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
   if (!isFs) {
-    const req = el.requestFullscreen || el.webkitRequestFullscreen ||
-                el.mozRequestFullScreen || el.msRequestFullscreen;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
     if (req) req.call(el);
   } else {
-    const exit = document.exitFullscreen || document.webkitExitFullscreen ||
-                 document.mozCancelFullScreen || document.msExitFullscreen;
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
     if (exit) exit.call(document);
   }
 }
-["fullscreenchange","webkitfullscreenchange","mozfullscreenchange","MSFullscreenChange"]
-  .forEach(evt => document.addEventListener(evt, () => {
-    setTimeout(() => {
-      if (pickerMap) pickerMap.invalidateSize();
-      if (reportMap) reportMap.invalidateSize();
-    }, 200);
-  }));
+["fullscreenchange","webkitfullscreenchange","mozfullscreenchange","MSFullscreenChange"].forEach(evt => document.addEventListener(evt, () => {
+  setTimeout(() => {
+    if (pickerMap) pickerMap.invalidateSize();
+    if (reportMap) reportMap.invalidateSize();
+  }, 200);
+}));
 
 function openPickerMap() {
   showScreen("map");
   requestAnimationFrame(() => {
     if (!pickerMap) {
-      const startLat = state.lat || 49.0;
-      const startLon = state.lon || 31.0;
-      const startZoom = state.lat ? 15 : 6;
-      pickerMap = L.map("pickerMap", {
-        center: [startLat, startLon], zoom: startZoom,
-        zoomControl: false, attributionControl: true
-      });
+      const startLat = state.lat || 49.0, startLon = state.lon || 31.0;
+      pickerMap = L.map("pickerMap", { center: [startLat, startLon], zoom: state.lat ? 15 : 6, zoomControl: false, attributionControl: true });
       ensureLabelsPane(pickerMap);
       applyTile(pickerMap, currentLayerType);
       pickerMap.on("move", updatePickerCoordLabel);
@@ -2015,14 +1551,11 @@ function openPickerMap() {
       pickerMap._customPolygonLayer = null;
     }
     if (custom && custom.length >= 3) {
-      pickerMap._customPolygonLayer = L.polygon(custom, {
-        color: "#ff9800", weight: 3, fillColor: "#ff9800", fillOpacity: 0.15
-      }).addTo(pickerMap);
+      pickerMap._customPolygonLayer = L.polygon(custom, { color: "#ff9800", weight: 3, fillColor: "#ff9800", fillOpacity: 0.15 }).addTo(pickerMap);
       $("btnPickerDeleteCustom").style.display = "flex";
     } else {
       $("btnPickerDeleteCustom").style.display = "none";
     }
-    
     pickerMap.invalidateSize();
     updatePickerCoordLabel();
   });
@@ -2043,16 +1576,11 @@ function renderReportMap(containerId, snap, waterBody, mode) {
     const el = document.getElementById("reportMap");
     const wrapEl = document.getElementById("reportMapWrap");
     if (!el || !wrapEl) return;
-    
     if (reportMap) { reportMap.remove(); reportMap = null; }
     _resetDrawingState();
 
     const center = [state.lat, state.lon];
-    const localMap = L.map("reportMap", {
-      center, zoom: 16, zoomControl: false, dragging: true, touchZoom: true,
-      scrollWheelZoom: false, doubleClickZoom: true, boxZoom: false,
-      keyboard: false, tap: true, attributionControl: false
-    });
+    const localMap = L.map("reportMap", { center, zoom: 16, zoomControl: false, dragging: true, touchZoom: true, scrollWheelZoom: false, doubleClickZoom: true, boxZoom: false, keyboard: false, tap: true, attributionControl: false });
     reportMap = localMap;
     ensureLabelsPane(localMap);
     applyTile(localMap, currentLayerType);
@@ -2062,34 +1590,20 @@ function renderReportMap(containerId, snap, waterBody, mode) {
       addWaterBodyLayer(localMap, waterBody, segments, mode);
 
       const areaHa = polygonAreaM2(waterBody.coords) / 10000;
-      let maxZoom;
-      if (areaHa < 0.3)       maxZoom = 20;
-      else if (areaHa < 1)    maxZoom = 19;
-      else if (areaHa < 5)    maxZoom = 18;
-      else if (areaHa < 30)   maxZoom = 17;
-      else if (areaHa < 200)  maxZoom = 16;
-      else                    maxZoom = 15;
-
+      let maxZoom = areaHa < 0.3 ? 20 : (areaHa < 1 ? 19 : (areaHa < 5 ? 18 : (areaHa < 30 ? 17 : (areaHa < 200 ? 16 : 15))));
       try {
         const bounds = L.latLngBounds(waterBody.coords.map(c => [c[0], c[1]]));
         bounds.extend([state.lat, state.lon]);
-        if (bounds.isValid()) {
-          localMap.fitBounds(bounds, {padding: [20, 20], maxZoom: maxZoom});
-        }
+        if (bounds.isValid()) localMap.fitBounds(bounds, {padding: [20, 20], maxZoom: maxZoom});
       } catch (e) {}
     } else {
       addWindOverlay(localMap, center, snap.windDirDeg, snap.windSpeedMs, 150);
       localMap.setView(center, 17);
     }
 
-    const myMarker = L.circleMarker(center, {
-      radius: 9, fillColor: "#58a6ff", color: "#ffffff", weight: 4, fillOpacity: 1
-    }).addTo(localMap);
-    const myMarkerBg = L.circleMarker(center, {
-      radius: 16, fillColor: "#58a6ff", color: "#58a6ff", weight: 1, fillOpacity: 0.2
-    }).addTo(localMap);
-    myMarker.bringToFront();
-    myMarkerBg.bringToFront();
+    const myMarker = L.circleMarker(center, { radius: 9, fillColor: "#58a6ff", color: "#ffffff", weight: 4, fillOpacity: 1 }).addTo(localMap);
+    const myMarkerBg = L.circleMarker(center, { radius: 16, fillColor: "#58a6ff", color: "#58a6ff", weight: 1, fillOpacity: 0.2 }).addTo(localMap);
+    myMarker.bringToFront(); myMarkerBg.bringToFront();
 
     toggleDepthLayer(localMap, reportDepthEnabled);
     updateReportDepthButtonState();
@@ -2102,18 +1616,13 @@ function renderReportMap(containerId, snap, waterBody, mode) {
     if (btnLayer) {
       btnLayer.textContent = LAYER_ICONS[currentLayerType];
       btnLayer.onclick = () => {
-        const idx = LAYER_ORDER.indexOf(currentLayerType);
-        currentLayerType = LAYER_ORDER[(idx + 1) % LAYER_ORDER.length];
+        currentLayerType = LAYER_ORDER[(LAYER_ORDER.indexOf(currentLayerType) + 1) % LAYER_ORDER.length];
         applyTile(localMap, currentLayerType);
         btnLayer.textContent = LAYER_ICONS[currentLayerType];
         reorderMapLayers(localMap);
       };
     }
-    if (btnDepth) btnDepth.onclick = () => {
-      reportDepthEnabled = !reportDepthEnabled;
-      toggleDepthLayer(localMap, reportDepthEnabled);
-      updateReportDepthButtonState();
-    };
+    if (btnDepth) btnDepth.onclick = () => { reportDepthEnabled = !reportDepthEnabled; toggleDepthLayer(localMap, reportDepthEnabled); updateReportDepthButtonState(); };
     if (btnFs) btnFs.onclick = () => toggleFullscreen(wrapEl);
   });
 }
@@ -2123,27 +1632,18 @@ function updateReportDepthButtonState() {
   btn.classList.toggle("active", reportDepthEnabled);
 }
 
-// ============================================================
-// СТАН / UI
-// ============================================================
-const state = {
-  lat: null, lon: null, dateOffset: 0, mode: "peaceful",
-  weatherData: null, targetDate: null, waterBody: null, screen: "input"
-};
+const state = { lat: null, lon: null, dateOffset: 0, mode: "peaceful", weatherData: null, targetDate: null, waterBody: null, screen: "input" };
 const $ = id => document.getElementById(id);
-const screenInput = $("screen-input");
-const screenSelect = $("screen-select");
-const screenReport = $("screen-report");
-const screenMap = $("screen-map");
-const topbarBack = $("topbarBack");
-const topbarTitle = $("topbarTitle");
+const screenInput = $("screen-input"), screenSelect = $("screen-select"), screenReport = $("screen-report"), screenMap = $("screen-map");
+const topbarBack = $("topbarBack"), topbarTitle = $("topbarTitle");
+
 function showScreen(name) {
   state.screen = name;
   document.body.classList.toggle("screen-map-active", name === "map");
   [screenInput, screenSelect, screenReport, screenMap].forEach(el => { if (el) el.classList.remove("active"); });
   if (name === "input") {
     screenInput.classList.add("active"); topbarBack.classList.add("hidden");
-    topbarTitle.textContent = "🎣 Кльов — прогноз";
+    topbarTitle.innerHTML = "🎣 Кльов — прогноз <span style=\"font-size:12px; color:var(--text2); font-weight:400; margin-left:4px;\">v1.0</span>";
     window.scrollTo({top: 0, behavior: "smooth"});
   } else if (name === "select") {
     screenSelect.classList.add("active"); topbarBack.classList.remove("hidden");
@@ -2164,114 +1664,52 @@ topbarBack.addEventListener("click", () => {
   else if (state.screen === "map") showScreen("input");
 });
 
-// ============================================================
-// ІСТОРІЯ
-// ============================================================
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
-  catch { return []; }
-}
-function saveHistory(h) {
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); }
-  catch {}
-}
+function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; } }
+function saveHistory(h) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {} }
 function addToHistory(lat, lon, name) {
   const h = loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001));
   h.unshift({lat, lon, name: name || null, t: Date.now()});
-  saveHistory(h);
-  renderHistory();
+  saveHistory(h); renderHistory();
 }
-function deleteHistoryItem(lat, lon) {
-  const h = loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001));
-  saveHistory(h);
-  renderHistory();
-}
+function deleteHistoryItem(lat, lon) { saveHistory(loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001))); renderHistory(); }
 function renameHistoryItem(lat, lon) {
   const h = loadHistory();
   const item = h.find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
   if (!item) return;
-  const current = item.name || "";
-  const name = prompt("Введіть назву для цієї локації:", current);
+  const name = prompt("Введіть назву для цієї локації:", item.name || "");
   if (name === null) return;
   item.name = name.trim() || null;
-  saveHistory(h);
-  renderHistory();
+  saveHistory(h); renderHistory();
 }
 function shareHistoryItem(lat, lon) {
-  const h = loadHistory();
-  const item = h.find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
+  const item = loadHistory().find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
   const name = item && item.name ? item.name : "";
-  const baseUrl = window.location.origin + window.location.pathname;
-  const url = `${baseUrl}?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}${name ? '&name=' + encodeURIComponent(name) : ''}`;
-  const title = name || `📍 ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-
-  if (navigator.share) {
-    navigator.share({ title: "Кльов — прогноз", text: title, url }).catch(() => {
-      navigator.clipboard.writeText(url).then(() => alert("Посилання скопійовано!")).catch(() => prompt("Скопіюйте вручну:", url));
-    });
-  } else {
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Посилання скопійовано! Надішліть його другу.");
-    }).catch(() => {
-      prompt("Скопіюйте посилання вручну:", url);
-    });
-  }
+  const url = `${window.location.origin + window.location.pathname}?lat=${lat.toFixed(5)}&lon=${lon.toFixed(5)}${name ? '&name=' + encodeURIComponent(name) : ''}`;
+  if (navigator.share) navigator.share({ title: name || "Кльов", text: "Прогноз", url }).catch(() => {});
+  else navigator.clipboard.writeText(url).then(() => alert("Скопійовано!")).catch(() => prompt("Вручну:", url));
 }
 function renderHistory() {
-  const h = loadHistory();
-  const card = $("historyCard");
-  const list = $("historyList");
+  const h = loadHistory(), card = $("historyCard"), list = $("historyList");
   if (h.length === 0) { card.style.display = "none"; return; }
   card.style.display = "block";
-  list.innerHTML = h.map(x => {
-    const title = escapeHtml(x.name || `Локація (${x.lat.toFixed(4)})`);
-    const coords = `${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}`;
-    return `<div class="history-item">
-      <div class="history-main" data-lat="${x.lat}" data-lon="${x.lon}">
-        <div class="h-name">${title}</div>
-        <div class="h-coords">${coords}</div>
-      </div>
-      <div class="history-actions">
-        <button class="history-btn" data-action="rename" data-lat="${x.lat}" data-lon="${x.lon}" title="Перейменувати">✏️</button>
-        <button class="history-btn" data-action="share" data-lat="${x.lat}" data-lon="${x.lon}" title="Поділитися">📤</button>
-        <button class="history-btn" data-action="delete" data-lat="${x.lat}" data-lon="${x.lon}" title="Видалити">🗑️</button>
-      </div>
-    </div>`;
-  }).join("");
-
-  list.querySelectorAll(".history-main").forEach(el => {
-    el.addEventListener("click", () => {
-      state.lat = parseFloat(el.dataset.lat);
-      state.lon = parseFloat(el.dataset.lon);
-      goToSelect();
-    });
-  });
-  list.querySelectorAll(".history-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const lat = parseFloat(btn.dataset.lat);
-      const lon = parseFloat(btn.dataset.lon);
-      const action = btn.dataset.action;
-      if (action === "rename") renameHistoryItem(lat, lon);
-      else if (action === "delete") {
-        if (confirm("Видалити цю локацію з історії?")) deleteHistoryItem(lat, lon);
-      } else if (action === "share") shareHistoryItem(lat, lon);
-    });
-  });
+  list.innerHTML = h.map(x => `<div class="history-item"><div class="history-main" data-lat="${x.lat}" data-lon="${x.lon}"><div class="h-name">${escapeHtml(x.name || `Локація (${x.lat.toFixed(4)})`)}</div><div class="h-coords">${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}</div></div><div class="history-actions"><button class="history-btn" data-action="rename" data-lat="${x.lat}" data-lon="${x.lon}">✏️</button><button class="history-btn" data-action="share" data-lat="${x.lat}" data-lon="${x.lon}">📤</button><button class="history-btn" data-action="delete" data-lat="${x.lat}" data-lon="${x.lon}">🗑️</button></div></div>`).join("");
+  list.querySelectorAll(".history-main").forEach(el => el.addEventListener("click", () => { state.lat = parseFloat(el.dataset.lat); state.lon = parseFloat(el.dataset.lon); goToSelect(); }));
+  list.querySelectorAll(".history-btn").forEach(btn => btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const lat = parseFloat(btn.dataset.lat), lon = parseFloat(btn.dataset.lon);
+    if (btn.dataset.action === "rename") renameHistoryItem(lat, lon);
+    else if (btn.dataset.action === "delete") { if (confirm("Видалити?")) deleteHistoryItem(lat, lon); }
+    else if (btn.dataset.action === "share") shareHistoryItem(lat, lon);
+  }));
 }
 
 function updateDateChips() {
   const today = new Date();
-  for (let i = 0; i < 3; i++) {
-    const d = addDaysLocal(today, i);
-    $("d"+i).textContent = `${pad2(d.getDate())}.${pad2(d.getMonth()+1)}`;
-  }
+  for (let i = 0; i < 3; i++) $("d"+i).textContent = `${pad2(addDaysLocal(today, i).getDate())}.${pad2(addDaysLocal(today, i).getMonth()+1)}`;
 }
 function goToSelect() {
   if (state.lat == null || state.lon == null) return;
-  updateDateChips();
-  addToHistory(state.lat, state.lon);
-  showScreen("select");
+  updateDateChips(); addToHistory(state.lat, state.lon); showScreen("select");
 }
 let _forecastToken = 0;
 async function runForecast(mode) {
@@ -2279,16 +1717,13 @@ async function runForecast(mode) {
   state.mode = mode;
   state.targetDate = addDaysLocal(new Date(), state.dateOffset);
   if (state.dateOffset === 0) {
-    const now = new Date();
-    let h = now.getHours();
+    const now = new Date(); let h = now.getHours();
     if (h < 6) h = 6; else if (h > 20) h = 18;
     state.targetDate.setHours(h, 0, 0, 0);
   } else {
     state.targetDate.setHours(6, 0, 0, 0);
   }
-  destroyAllCharts();
-  _resetDrawingState();
-  
+  destroyAllCharts(); _resetDrawingState();
   screenReport.innerHTML = `<div class="loading"><div class="spinner"></div><div>Отримую метеодані та контур водойми...</div></div>`;
   showScreen("report");
 
@@ -2298,23 +1733,15 @@ async function runForecast(mode) {
       ? Promise.resolve({ coords: custom, tags: {name: "Намальований вручну"}, id: "custom" })
       : fetchWaterBody(state.lat, state.lon).catch(() => null);
 
-    const [weatherData, waterBody] = await Promise.all([
-      fetchWeather(state.lat, state.lon),
-      waterBodyPromise
-    ]);
-    
+    const [weatherData, waterBody] = await Promise.all([fetchWeather(state.lat, state.lon), waterBodyPromise]);
     if (token !== _forecastToken) return;
     
-    state.weatherData = weatherData;
-    state.waterBody = waterBody;
+    state.weatherData = weatherData; state.waterBody = waterBody;
     const wbMod = computeWbMod(waterBody);
     const snap = buildSnapshot(weatherData, state.targetDate);
-    const report = mode === "peaceful"
-      ? generatePeacefulReport(snap, state.targetDate, wbMod)
-      : generatePredatorReport(snap, state.targetDate, wbMod);
-    screenReport.innerHTML = mode === "peaceful"
-      ? renderPeacefulReport(report)
-      : renderPredatorReport(report);
+    const report = mode === "peaceful" ? generatePeacefulReport(snap, state.targetDate, wbMod) : generatePredatorReport(snap, state.targetDate, wbMod);
+    
+    screenReport.innerHTML = mode === "peaceful" ? renderPeacefulReport(report) : renderPredatorReport(report);
     setTimeout(() => {
       if (token !== _forecastToken) return;
       drawPressureChart("chartP", snap);
@@ -2324,116 +1751,67 @@ async function runForecast(mode) {
     }, 150);
   } catch (err) {
     if (token !== _forecastToken) return;
-    screenReport.innerHTML = `<div class="card"><div class="error">❌ ${escapeHtml(err.message)}</div>
-      <button class="btn secondary" onclick="showScreen('select')">← Назад</button></div>`;
+    screenReport.innerHTML = `<div class="card"><div class="error">❌ ${escapeHtml(err.message)}</div><button class="btn secondary" onclick="showScreen('select')">← Назад</button></div>`;
   }
 }
 
-// ============================================================
-// ОБРОБНИКИ
-// ============================================================
 $("btnGeo").addEventListener("click", () => {
   if (!navigator.geolocation) { alert("Геолокація недоступна"); return; }
-  $("btnGeo").disabled = true;
-  $("btnGeo").textContent = "⏳ Визначаю...";
+  $("btnGeo").disabled = true; $("btnGeo").textContent = "⏳ Визначаю...";
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      state.lat = pos.coords.latitude;
-      state.lon = pos.coords.longitude;
-      $("btnGeo").disabled = false;
-      $("btnGeo").innerHTML = '<span class="btn-icon">📡</span>Моє місце (геолокація)';
-      goToSelect();
-    },
-    err => {
-      $("btnGeo").disabled = false;
-      $("btnGeo").innerHTML = '<span class="btn-icon">📡</span>Моє місце (геолокація)';
-      alert("Не вдалося отримати геолокацію: " + err.message);
-    },
+    pos => { state.lat = pos.coords.latitude; state.lon = pos.coords.longitude; $("btnGeo").disabled = false; $("btnGeo").innerHTML = '<span class="btn-icon">📡</span>Моє місце (геолокація)'; goToSelect(); },
+    err => { $("btnGeo").disabled = false; $("btnGeo").innerHTML = '<span class="btn-icon">📡</span>Моє місце (геолокація)'; alert("Помилка: " + err.message); },
     {enableHighAccuracy: false, timeout: 10000, maximumAge: 300000}
   );
 });
 $("btnPickMap").addEventListener("click", openPickerMap);
 $("btnManual").addEventListener("click", () => {
-  const lat = parseFloat($("inpLat").value);
-  const lon = parseFloat($("inpLon").value);
-  if (isNaN(lat) || isNaN(lon)) { alert("Введіть широту та довготу"); return; }
-  if (lat < -90 || lat > 90) { alert("Широта в межах [-90, 90]"); return; }
-  if (lon < -180 || lon > 180) { alert("Довгота в межах [-180, 180]"); return; }
-  state.lat = lat; state.lon = lon;
-  goToSelect();
+  const lat = parseFloat($("inpLat").value), lon = parseFloat($("inpLon").value);
+  if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) { alert("Некоректні координати"); return; }
+  state.lat = lat; state.lon = lon; goToSelect();
 });
 $("btnClearAllData").addEventListener("click", () => {
-  if (!confirm("Ви впевнені? Це видалить:\n\n• Всю історію локацій\n• Всі намальовані контури\n• Кеш погоди\n• Налаштування інтерфейсу\n\nДію не можна скасувати.")) return;
+  if (!confirm("Ви впевнені? Це видалить історію, контури та налаштування.")) return;
   try {
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem(CUSTOM_POLYGON_KEY);
-    localStorage.removeItem(WATER_CACHE_KEY);
-    localStorage.removeItem(MODE_KEY);
+    localStorage.removeItem(HISTORY_KEY); localStorage.removeItem(CUSTOM_POLYGON_KEY); localStorage.removeItem(WATER_CACHE_KEY); localStorage.removeItem(MODE_KEY);
   } catch (e) {}
-  renderHistory();
-  alert("✅ Всі дані очищено.");
-  showScreen("input");
-  location.reload();
+  renderHistory(); alert("✅ Всі дані очищено."); showScreen("input"); location.reload();
 });
-document.querySelectorAll("#dateChips .chip").forEach(chip => {
-  chip.addEventListener("click", () => {
-    document.querySelectorAll("#dateChips .chip").forEach(c => c.classList.remove("active"));
-    chip.classList.add("active");
-    state.dateOffset = parseInt(chip.dataset.offset, 10);
-  });
-});
-document.querySelectorAll(".mode-card").forEach(card => {
-  card.addEventListener("click", () => runForecast(card.dataset.mode));
-});
+document.querySelectorAll("#dateChips .chip").forEach(chip => chip.addEventListener("click", () => {
+  document.querySelectorAll("#dateChips .chip").forEach(c => c.classList.remove("active"));
+  chip.classList.add("active"); state.dateOffset = parseInt(chip.dataset.offset, 10);
+}));
+document.querySelectorAll(".mode-card").forEach(card => card.addEventListener("click", () => runForecast(card.dataset.mode)));
 
-// Кнопки селектора карти
 $("btnMapCancel").addEventListener("click", () => showScreen("input"));
 $("btnMapConfirm").addEventListener("click", () => {
   if (!pickerMap) return;
-  
   if (pickerMap._customPolygonLayer) {
-    const pts = pickerMap._customPolygonLayer.getLatLngs()[0].map(p => [p.lat, p.lng]);
-    const c = pickerMap.getCenter();
-    _customPolygonSet(c.lat, c.lng, pts);
+    _customPolygonSet(pickerMap.getCenter().lat, pickerMap.getCenter().lng, pickerMap._customPolygonLayer.getLatLngs()[0].map(p => [p.lat, p.lng]));
   }
-  
   const c = pickerMap.getCenter();
   state.lat = c.lat; state.lon = c.lng;
-  $("inpLat").value = c.lat.toFixed(5);
-  $("inpLon").value = c.lng.toFixed(5);
+  $("inpLat").value = c.lat.toFixed(5); $("inpLon").value = c.lng.toFixed(5);
   goToSelect();
 });
 $("btnMapLayer").addEventListener("click", () => {
-  const idx = LAYER_ORDER.indexOf(currentLayerType);
-  currentLayerType = LAYER_ORDER[(idx + 1) % LAYER_ORDER.length];
+  currentLayerType = LAYER_ORDER[(LAYER_ORDER.indexOf(currentLayerType) + 1) % LAYER_ORDER.length];
   $("btnMapLayer").textContent = LAYER_ICONS[currentLayerType];
   applyTile(pickerMap, currentLayerType);
 });
-$("btnDepthToggle").addEventListener("click", () => {
-  if (!pickerMap) return;
-  pickerDepthEnabled = !pickerDepthEnabled;
-  toggleDepthLayer(pickerMap, pickerDepthEnabled);
-  updateDepthButtonState(pickerDepthEnabled);
-});
+$("btnDepthToggle").addEventListener("click", () => { if (!pickerMap) return; pickerDepthEnabled = !pickerDepthEnabled; toggleDepthLayer(pickerMap, pickerDepthEnabled); updateDepthButtonState(pickerDepthEnabled); });
 $("btnMapLocate").addEventListener("click", () => {
   if (!pickerMap || !navigator.geolocation) return;
   pickerMap.locate({ setView: true, maxZoom: 16, enableHighAccuracy: false, timeout: 8000 });
-  pickerMap.once("locationfound", e => {
-    state.lat = e.latlng.lat; state.lon = e.latlng.lng;
-    updatePickerCoordLabel();
-  });
+  pickerMap.once("locationfound", e => { state.lat = e.latlng.lat; state.lon = e.latlng.lng; updatePickerCoordLabel(); });
 });
 $("btnMapFullscreen").addEventListener("click", () => toggleFullscreen(screenMap));
 $("btnPickerDraw").addEventListener("click", () => startDrawingMode(pickerMap));
 $("btnPickerDeleteCustom").addEventListener("click", () => {
   if (!pickerMap) return;
   if (confirm("Видалити ваш намальований контур?")) {
-    const c = pickerMap.getCenter();
-    _customPolygonDelete(c.lat, c.lng);
-    if (pickerMap._customPolygonLayer) {
-      pickerMap.removeLayer(pickerMap._customPolygonLayer);
-      pickerMap._customPolygonLayer = null;
-    }
+    _customPolygonDelete(pickerMap.getCenter().lat, pickerMap.getCenter().lng);
+    if (pickerMap._customPolygonLayer) { pickerMap.removeLayer(pickerMap._customPolygonLayer); pickerMap._customPolygonLayer = null; }
     $("btnPickerDeleteCustom").style.display = "none";
   }
 });
@@ -2441,100 +1819,43 @@ $("drawUndo").addEventListener("click", _undoDrawPoint);
 $("drawFinish").addEventListener("click", finishDrawingMode);
 $("drawCancel").addEventListener("click", cancelDrawingMode);
 
-// ============================================================
-// PWA
-// ============================================================
 (function setupPWA() {
   function makeIcon(size) {
-    const c = document.createElement("canvas");
-    c.width = c.height = size;
+    const c = document.createElement("canvas"); c.width = c.height = size;
     const ctx = c.getContext("2d");
-    const grad = ctx.createLinearGradient(0, 0, size, size);
-    grad.addColorStop(0, "#0d1117"); grad.addColorStop(1, "#161b22");
+    const grad = ctx.createLinearGradient(0, 0, size, size); grad.addColorStop(0, "#0d1117"); grad.addColorStop(1, "#161b22");
     ctx.fillStyle = grad; ctx.fillRect(0, 0, size, size);
-    ctx.font = `${size*0.65}px serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("🎣", size/2, size/2 + size*0.05);
+    ctx.font = `${size*0.65}px serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🎣", size/2, size/2 + size*0.05);
     return c.toDataURL("image/png");
   }
-  const manifest = {
-    name: "Кльов — прогноз риболовлі", short_name: "Кльов",
-    description: "Прогноз кльову мирних риб та хижаків",
-    start_url: ".", scope: ".", display: "standalone", orientation: "portrait",
-    background_color: "#0d1117", theme_color: "#0d1117", lang: "uk",
-    icons: [
-      {src: makeIcon(192), sizes: "192x192", type: "image/png", purpose: "any maskable"},
-      {src: makeIcon(512), sizes: "512x512", type: "image/png", purpose: "any maskable"}
-    ]
-  };
+  const manifest = { name: "Кльов — прогноз риболовлі", short_name: "Кльов", description: "Прогноз кльову", start_url: ".", scope: ".", display: "standalone", orientation: "portrait", background_color: "#0d1117", theme_color: "#0d1117", lang: "uk", icons: [{src: makeIcon(192), sizes: "192x192", type: "image/png", purpose: "any maskable"},{src: makeIcon(512), sizes: "512x512", type: "image/png", purpose: "any maskable"}] };
   const blob = new Blob([JSON.stringify(manifest)], {type: "application/manifest+json"});
-  const link = document.createElement("link");
-  link.rel = "manifest";
-  link.href = URL.createObjectURL(blob);
-  document.head.appendChild(link);
-  const appleIcon = document.createElement("link");
-  appleIcon.rel = "apple-touch-icon";
-  appleIcon.href = makeIcon(180);
-  document.head.appendChild(appleIcon);
+  const link = document.createElement("link"); link.rel = "manifest"; link.href = URL.createObjectURL(blob); document.head.appendChild(link);
+  const appleIcon = document.createElement("link"); appleIcon.rel = "apple-touch-icon"; appleIcon.href = makeIcon(180); document.head.appendChild(appleIcon);
 })();
 
-// ============================================================
-// РЕЖИМ ВІДОБРАЖЕННЯ (ТЕЛЕФОН / ПК)
-// ============================================================
-function detectDefaultUiMode() {
-  try {
-    if (window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 900) return "phone";
-    return "pc";
-  } catch { return "phone"; }
-}
-
+function detectDefaultUiMode() { try { return (window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 900) ? "phone" : "pc"; } catch { return "phone"; } }
 function applyUiMode(mode) {
   if (mode !== "pc" && mode !== "phone") mode = detectDefaultUiMode();
-  document.body.classList.toggle("mode-pc", mode === "pc");
-  document.body.classList.toggle("mode-phone", mode === "phone");
+  document.body.classList.toggle("mode-pc", mode === "pc"); document.body.classList.toggle("mode-phone", mode === "phone");
   const btn = $("topbarMode");
-  if (btn) {
-    if (mode === "pc") {
-      btn.textContent = "🖥";
-      btn.title = "Режим ПК (натисніть для телефону)";
-    } else {
-      btn.textContent = "📱";
-      btn.title = "Режим телефону (натисніть для ПК)";
-    }
-  }
+  if (btn) btn.textContent = mode === "pc" ? "🖥" : "📱";
   try { localStorage.setItem(MODE_KEY, mode); } catch {}
-  setTimeout(() => {
-    if (pickerMap) pickerMap.invalidateSize();
-    if (reportMap) reportMap.invalidateSize();
-  }, 100);
+  setTimeout(() => { if (pickerMap) pickerMap.invalidateSize(); if (reportMap) reportMap.invalidateSize(); }, 100);
 }
-
-function toggleUiMode() {
-  const cur = document.body.classList.contains("mode-pc") ? "pc" : "phone";
-  applyUiMode(cur === "pc" ? "phone" : "pc");
-}
-
+function toggleUiMode() { applyUiMode(document.body.classList.contains("mode-pc") ? "phone" : "pc"); }
 (function initUiMode() {
-  let saved = null;
-  try { saved = localStorage.getItem(MODE_KEY); } catch {}
+  let saved = null; try { saved = localStorage.getItem(MODE_KEY); } catch {}
   applyUiMode(saved || detectDefaultUiMode());
-  const btn = $("topbarMode");
-  if (btn) btn.addEventListener("click", toggleUiMode);
+  const btn = $("topbarMode"); if (btn) btn.addEventListener("click", toggleUiMode);
 })();
 
-// ============================================================
-// СТАРТ
-// ============================================================
 renderHistory();
 updateDateChips();
 (function readUrlParams() {
   const p = new URLSearchParams(location.search);
-  const lat = parseFloat(p.get("lat")), lon = parseFloat(p.get("lon"));
-  const name = p.get("name") || null;
-  if (!isNaN(lat) && !isNaN(lon)) {
-    state.lat = lat; state.lon = lon;
-    if (name) addToHistory(lat, lon, name);
-    goToSelect();
-  }
+  const lat = parseFloat(p.get("lat")), lon = parseFloat(p.get("lon")), name = p.get("name") || null;
+  if (!isNaN(lat) && !isNaN(lon)) { state.lat = lat; state.lon = lon; if (name) addToHistory(lat, lon, name); goToSelect(); }
 })();
 </script>
 </body>
