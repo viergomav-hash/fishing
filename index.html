@@ -143,11 +143,13 @@ details .content{padding:12px 16px 16px}
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .15s}
 .map-btn:active{background:var(--accent)}
 .map-btn.active{background:var(--accent);border-color:var(--accent)}
+
+/* ===== ЗМЕНШЕНА ПАНЕЛЬ КЕРУВАННЯ ===== */
 .map-controls-bottom{position:absolute;bottom:0;left:0;right:0;z-index:1000;
   background:linear-gradient(to top, rgba(13,17,23,.98) 60%, rgba(13,17,23,0));
-  padding:20px var(--pad) calc(16px + env(safe-area-inset-bottom)); pointer-events: auto;}
+  padding:15px var(--pad) calc(12px + env(safe-area-inset-bottom)); pointer-events: auto;}
 .map-coord-display{text-align:center;color:var(--text);
-  font-family:ui-monospace,Menlo,monospace;font-size:13px;margin-bottom:10px;
+  font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-bottom:6px;
   text-shadow:0 0 6px rgba(0,0,0,.9)}
 .map-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;
   color:var(--text2);margin-top:8px}
@@ -204,30 +206,42 @@ details .content{padding:12px 16px 16px}
 .wind-label div, .dist-label div { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
 .dist-label div{ pointer-events:none; }
 
-/* Оновлений блок малювання - тепер він всередині нижньої панелі */
+/* ===== ЗМЕНШЕНИЙ БЛОК МАЛЮВАННЯ ===== */
 .draw-overlay { 
   position: relative;
   background: rgba(13,17,23,.85);
   border: 1px solid #ff9800;
   border-radius: 10px;
-  padding: 12px 14px; 
-  margin-bottom: 12px;
+  padding: 8px 10px; 
+  margin-bottom: 8px;
   pointer-events: auto;
   animation: slideUp .25s ease-out; 
 }
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.draw-hint{font-size:13px;color:#e6edf3;margin-bottom:8px;text-align:center;line-height:1.35}
-.draw-hint strong{color:#ff9800;font-size:16px;font-weight:700}
-.draw-hint .sub{display:block;font-size:11.5px;color:#8b949e;margin-top:2px}
-.draw-btns{display:flex;gap:6px}
-.draw-btn{flex:1;padding:11px 6px;border:1px solid #30363d;border-radius:8px;
-  background:#21262d;color:#e6edf3;font-size:12px;cursor:pointer;font-weight:600;
+.draw-hint{font-size:11.5px;color:#e6edf3;margin-bottom:6px;text-align:center;line-height:1.3}
+.draw-hint strong{color:#ff9800;font-size:14px;font-weight:700}
+.draw-hint .sub{display:block;font-size:10px;color:#8b949e;margin-top:1px}
+.draw-btns{display:flex;gap:5px}
+.draw-btn{flex:1;padding:6px 4px;border:1px solid #30363d;border-radius:8px;
+  background:#21262d;color:#e6edf3;font-size:11px;cursor:pointer;font-weight:600;
   font-family:inherit;transition:background .15s; touch-action: manipulation;}
 .draw-btn:hover{background:#2d333b}
 .draw-btn.primary{background:#238636;border-color:#238636;color:white}
 .draw-btn.primary:hover{background:#2ea043}
 .draw-btn.danger{background:#da3633;border-color:#da3633;color:white}
 .draw-btn.danger:hover{background:#f85149}
+
+/* Зменшуємо кнопки в селекторі карти */
+.map-controls-bottom .btn {
+  padding: 10px;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+.map-controls-bottom .btn.secondary {
+  padding: 10px;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
 
 /* Fullscreen */
 :fullscreen{background:#000}
@@ -316,7 +330,7 @@ details .content{padding:12px 16px 16px}
     </button>
     
     <div style="text-align:center; color:var(--text2); font-size:12px; margin-top:24px; margin-bottom:10px;">
-      Кльов v2.8 (Зручний інтерфейс)
+      Кльов v2.9 (Компактні кнопки)
     </div>
   </section>
 
@@ -375,7 +389,7 @@ details .content{padding:12px 16px 16px}
     
     <div class="map-controls-bottom" id="pickerControlsBottom">
       
-      <!-- Блок малювання тепер знаходиться тут, над кнопкою підтвердження -->
+      <!-- Блок малювання -->
       <div id="drawOverlay" class="draw-overlay hidden">
         <div class="draw-hint">
           ✏️ Тапайте по берегу, щоб обвести контур. Точок: <strong id="drawCount">0</strong>
@@ -733,7 +747,6 @@ function scoreTolstolob(trend, wTemp, m) {
   return clampScore(s + m);
 }
 
-// ВИПРАВЛЕНО: Порядок перевірок для хижаків
 function tempDeltaPredator(t, cmin, cmax, omin, omax, hotP, coldP) {
   if (!Number.isFinite(t)) return 0;
   if (t >= cmin && t <= cmax) return 25;
