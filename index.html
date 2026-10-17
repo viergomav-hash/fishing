@@ -35,7 +35,6 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   display:flex;align-items:center;gap:12px;min-height:52px}
 #topbarTitle{font-weight:700;font-size:17px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:8px}
 
-/* Стилі для помітної кнопки "Назад" */
 #topbarBack{
   background:rgba(88, 166, 255, 0.15);
   border:1px solid var(--blue);
@@ -145,6 +144,14 @@ details .content{padding:12px 16px 16px}
   color:var(--text);width:32px;height:32px;font-size:14px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:background .15s}
 .history-btn:hover{background:var(--bg2)}
+
+/* Стилі для інструкції */
+.instruction-text p { margin: 0 0 10px 0; }
+.instruction-text ul { padding-left: 20px; margin-top: 4px; }
+.instruction-text li { margin-bottom: 8px; }
+.instruction-text .legend-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.instruction-text .color-box { width: 16px; height: 16px; border-radius: 4px; margin-top: 4px; flex-shrink: 0; }
+
 @media(max-width:400px){
   .score-row .label{flex-basis:95px;font-size:13px}
   .weather-grid{font-size:13px}
@@ -283,6 +290,7 @@ details .content{padding:12px 16px 16px}
   body.mode-pc main { max-width: 1200px; }
   body.mode-pc #screen-input { max-width: 640px; margin: 0 auto; }
   body.mode-pc #screen-select { max-width: 760px; margin: 0 auto; }
+  body.mode-pc #screen-info { max-width: 760px; margin: 0 auto; }
   body.mode-pc.screen-map-active main { max-width: none; padding: 0; }
   body.mode-pc #reportContent {
     display: grid;
@@ -340,12 +348,71 @@ details .content{padding:12px 16px 16px}
       <div id="historyList"></div>
     </div>
 
+    <button class="btn secondary" id="btnInfo" style="margin-top:10px;">
+      <span class="btn-icon">📖</span>Інструкція користувача
+    </button>
+
     <button class="btn danger" id="btnClearAllData">
       <span class="btn-icon">🧹</span>Очистити всі збережені дані
     </button>
     
     <div style="text-align:center; color:var(--text2); font-size:12px; margin-top:24px; margin-bottom:10px;">
       Кльов v1.0
+    </div>
+  </section>
+
+  <section id="screen-info" class="screen">
+    <div class="card instruction-text">
+      <h2>📖 Інструкція</h2>
+      
+      <p><strong>1. Як зробити прогноз?</strong></p>
+      <ul>
+        <li>Вкажіть локацію (через GPS, карту або вручну).</li>
+        <li>Оберіть дату та час, на який плануєте риболовлю (наприклад, "Завтра").</li>
+        <li>Виберіть тип риби: <strong>Мирна</strong> чи <strong>Хижак</strong>.</li>
+      </ul>
+
+      <p><strong>2. Як працює карта та контур?</strong></p>
+      <ul>
+        <li>Натисніть <strong>✏️ Олівець</strong>, щоб обвести водойму (мінімум 3 точки, але краще 8–12).</li>
+        <li>Намагайтеся обводити <strong>точно по краю води</strong>, особливо виділяючи затоки та кути. Це критично важливо!</li>
+        <li>Чим точніший контур, тим правильніше програма визначить береги та знайде найкраще місце для засідки.</li>
+      </ul>
+
+      <p><strong>3. Що означають кольори на карті?</strong></p>
+      <div class="legend-item">
+        <div class="color-box" style="background:#3fb950"></div>
+        <div><strong>Зелений (Підвітряний берег):</strong> Найкраще місце. Вітер жене сюди корм, вода спокійніша. Риба стоїть тут.</div>
+      </div>
+      <div class="legend-item">
+        <div class="color-box" style="background:#d29922"></div>
+        <div><strong>Жовтий (Нейтрально):</strong> Перехідна зона. Можна спробувати, але активність може бути середньою.</div>
+      </div>
+      <div class="legend-item">
+        <div class="color-box" style="background:#f85149"></div>
+        <div><strong>Червоний (Навітряний берег):</strong> Тут хвиля та вітер у обличчя. Мирна риба сюди не підійде, а хижак обережний.</div>
+      </div>
+      <div class="legend-item">
+        <div class="color-box" style="background:#ffd700; border-radius:50%;"></div>
+        <div><strong>Жовта точка 🎯:</strong> Конкретне місце (найвищий бал), де програма радить стати. <em>(Якщо там мілина — орієнтуйтесь на зелену лінію поруч).</em></div>
+      </div>
+
+      <p><strong>4. Як читати погоду та графіки?</strong></p>
+      <ul>
+        <li>💧 <strong>Температура води (розрах.):</strong> Програма не вимірює воду, а рахує її за температурою повітря (це орієнтовне значення).</li>
+        <li>📉 <strong>Тиск:</strong> Найкращий кльов — при плавному падінні або стабільному тиску. Різкі стрибки псують кльов.</li>
+        <li>📈 <strong>Графіки:</strong> Допомагають знайти "золоту годину". На графіку хижаків видно піки активності на світанку та заході.</li>
+      </ul>
+
+      <p><strong>5. Чому точка зміщується?</strong></p>
+      <ul>
+        <li>Програма враховує прогноз <strong>саме на ту годину</strong>, яку ви обрали. Якщо вітер зміниться на завтра, зелена зона переміститься на інший берег.</li>
+        <li>При слабкому вітрі (штилі) програма шукає найкращі "засідки" за рельєфом берега (гострі кути, увігнутості).</li>
+      </ul>
+
+      <div style="text-align:center; margin-top: 20px;">
+        <button class="btn secondary" onclick="showScreen('input')">← Повернутися</button>
+      </div>
     </div>
   </section>
 
@@ -1634,13 +1701,14 @@ function updateReportDepthButtonState() {
 
 const state = { lat: null, lon: null, dateOffset: 0, mode: "peaceful", weatherData: null, targetDate: null, waterBody: null, screen: "input" };
 const $ = id => document.getElementById(id);
-const screenInput = $("screen-input"), screenSelect = $("screen-select"), screenReport = $("screen-report"), screenMap = $("screen-map");
+const screenInput = $("screen-input"), screenSelect = $("screen-select"), screenReport = $("screen-report"), screenMap = $("screen-map"), screenInfo = $("screen-info");
 const topbarBack = $("topbarBack"), topbarTitle = $("topbarTitle");
 
 function showScreen(name) {
   state.screen = name;
   document.body.classList.toggle("screen-map-active", name === "map");
-  [screenInput, screenSelect, screenReport, screenMap].forEach(el => { if (el) el.classList.remove("active"); });
+  [screenInput, screenSelect, screenReport, screenMap, screenInfo].forEach(el => { if (el) el.classList.remove("active"); });
+  
   if (name === "input") {
     screenInput.classList.add("active"); topbarBack.classList.add("hidden");
     topbarTitle.innerHTML = "🎣 Кльов — прогноз <span style=\"font-size:12px; color:var(--text2); font-weight:400; margin-left:4px;\">v1.0</span>";
@@ -1656,12 +1724,17 @@ function showScreen(name) {
   } else if (name === "map") {
     screenMap.classList.add("active"); topbarBack.classList.remove("hidden");
     topbarTitle.textContent = "🗺 Обрати місце";
+  } else if (name === "info") {
+    screenInfo.classList.add("active"); topbarBack.classList.remove("hidden");
+    topbarTitle.textContent = "📖 Інструкція";
+    window.scrollTo({top: 0, behavior: "smooth"});
   }
 }
 topbarBack.addEventListener("click", () => {
   if (state.screen === "report") { _resetDrawingState(); showScreen("select"); }
   else if (state.screen === "select") showScreen("input");
   else if (state.screen === "map") showScreen("input");
+  else if (state.screen === "info") showScreen("input");
 });
 
 function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; } }
@@ -1754,6 +1827,8 @@ async function runForecast(mode) {
     screenReport.innerHTML = `<div class="card"><div class="error">❌ ${escapeHtml(err.message)}</div><button class="btn secondary" onclick="showScreen('select')">← Назад</button></div>`;
   }
 }
+
+$("btnInfo").addEventListener("click", () => showScreen("info"));
 
 $("btnGeo").addEventListener("click", () => {
   if (!navigator.geolocation) { alert("Геолокація недоступна"); return; }
