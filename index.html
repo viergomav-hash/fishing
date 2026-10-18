@@ -145,7 +145,6 @@ details .content{padding:12px 16px 16px}
   display:flex;align-items:center;justify-content:center;transition:background .15s}
 .history-btn:hover{background:var(--bg2)}
 
-/* Стилі для інструкції */
 .instruction-text p { margin: 0 0 10px 0; }
 .instruction-text ul { padding-left: 20px; margin-top: 4px; }
 .instruction-text li { margin-bottom: 8px; }
@@ -408,6 +407,12 @@ details .content{padding:12px 16px 16px}
       <ul>
         <li>Програма враховує прогноз <strong>саме на ту годину</strong>, яку ви обрали. Якщо вітер зміниться на завтра, зелена зона переміститься на інший берег.</li>
         <li>При слабкому вітрі (штилі) програма шукає найкращі "засідки" за рельєфом берега (гострі кути, увігнутості).</li>
+      </ul>
+
+      <p><strong>6. Як зберегти назву водойми?</strong></p>
+      <ul>
+        <li>Натисніть ✏️ навпроти локації в історії та введіть назву (наприклад, "Ставок біля лісу").</li>
+        <li>Ця назва збережеться назавжди і буде відображатися у верхній панелі.</li>
       </ul>
 
       <div style="text-align:center; margin-top: 20px;">
@@ -1704,22 +1709,30 @@ const $ = id => document.getElementById(id);
 const screenInput = $("screen-input"), screenSelect = $("screen-select"), screenReport = $("screen-report"), screenMap = $("screen-map"), screenInfo = $("screen-info");
 const topbarBack = $("topbarBack"), topbarTitle = $("topbarTitle");
 
+function getLocName() {
+  const hist = loadHistory().find(x => Math.abs(x.lat-state.lat)<0.001 && Math.abs(x.lon-state.lon)<0.001);
+  return hist && hist.name ? hist.name : null;
+}
+
 function showScreen(name) {
   state.screen = name;
   document.body.classList.toggle("screen-map-active", name === "map");
   [screenInput, screenSelect, screenReport, screenMap, screenInfo].forEach(el => { if (el) el.classList.remove("active"); });
   
+  const locName = getLocName();
+  const nameSuffix = locName ? ` · ${locName}` : "";
+
   if (name === "input") {
     screenInput.classList.add("active"); topbarBack.classList.add("hidden");
     topbarTitle.innerHTML = "🎣 Кльов — прогноз <span style=\"font-size:12px; color:var(--text2); font-weight:400; margin-left:4px;\">v1.0</span>";
     window.scrollTo({top: 0, behavior: "smooth"});
   } else if (name === "select") {
     screenSelect.classList.add("active"); topbarBack.classList.remove("hidden");
-    topbarTitle.textContent = "📍 Прогноз";
+    topbarTitle.textContent = `📍 Прогноз${nameSuffix}`;
     window.scrollTo({top: 0, behavior: "smooth"});
   } else if (name === "report") {
     screenReport.classList.add("active"); topbarBack.classList.remove("hidden");
-    topbarTitle.textContent = "📊 Звіт";
+    topbarTitle.textContent = `📊 Звіт${nameSuffix}`;
     window.scrollTo({top: 0, behavior: "smooth"});
   } else if (name === "map") {
     screenMap.classList.add("active"); topbarBack.classList.remove("hidden");
@@ -1739,12 +1752,25 @@ topbarBack.addEventListener("click", () => {
 
 function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; } }
 function saveHistory(h) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {} }
+
 function addToHistory(lat, lon, name) {
-  const h = loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001));
-  h.unshift({lat, lon, name: name || null, t: Date.now()});
-  saveHistory(h); renderHistory();
+  let h = loadHistory();
+  const existingIndex = h.findIndex(x => Math.abs(x.lat - lat) < 0.001 && Math.abs(x.lon - lon) < 0.001);
+
+  if (existingIndex >= 0) {
+    const existing = h.splice(existingIndex, 1)[0];
+    const finalName = (name && name.trim()) ? name.trim() : existing.name;
+    h.unshift({ lat, lon, name: finalName, t: Date.now() });
+  } else {
+    h.unshift({ lat, lon, name: (name && name.trim()) ? name.trim() : null, t: Date.now() });
+  }
+
+  saveHistory(h);
+  renderHistory();
 }
+
 function deleteHistoryItem(lat, lon) { saveHistory(loadHistory().filter(x => !(Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001))); renderHistory(); }
+
 function renameHistoryItem(lat, lon) {
   const h = loadHistory();
   const item = h.find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
@@ -1753,7 +1779,9 @@ function renameHistoryItem(lat, lon) {
   if (name === null) return;
   item.name = name.trim() || null;
   saveHistory(h); renderHistory();
+  if (state.screen !== "input") showScreen(state.screen); // Оновити заголовок, якщо ми не на головній
 }
+
 function shareHistoryItem(lat, lon) {
   const item = loadHistory().find(x => Math.abs(x.lat-lat)<0.001 && Math.abs(x.lon-lon)<0.001);
   const name = item && item.name ? item.name : "";
@@ -1761,6 +1789,7 @@ function shareHistoryItem(lat, lon) {
   if (navigator.share) navigator.share({ title: name || "Кльов", text: "Прогноз", url }).catch(() => {});
   else navigator.clipboard.writeText(url).then(() => alert("Скопійовано!")).catch(() => prompt("Вручну:", url));
 }
+
 function renderHistory() {
   const h = loadHistory(), card = $("historyCard"), list = $("historyList");
   if (h.length === 0) { card.style.display = "none"; return; }
@@ -1782,7 +1811,9 @@ function updateDateChips() {
 }
 function goToSelect() {
   if (state.lat == null || state.lon == null) return;
-  updateDateChips(); addToHistory(state.lat, state.lon); showScreen("select");
+  updateDateChips();
+  addToHistory(state.lat, state.lon);
+  showScreen("select");
 }
 let _forecastToken = 0;
 async function runForecast(mode) {
@@ -1930,7 +1961,12 @@ updateDateChips();
 (function readUrlParams() {
   const p = new URLSearchParams(location.search);
   const lat = parseFloat(p.get("lat")), lon = parseFloat(p.get("lon")), name = p.get("name") || null;
-  if (!isNaN(lat) && !isNaN(lon)) { state.lat = lat; state.lon = lon; if (name) addToHistory(lat, lon, name); goToSelect(); }
+  if (!isNaN(lat) && !isNaN(lon)) {
+    state.lat = lat; state.lon = lon;
+    addToHistory(lat, lon, name);
+    updateDateChips();
+    showScreen("select");
+  }
 })();
 </script>
 </body>
